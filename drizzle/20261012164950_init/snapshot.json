@@ -1,0 +1,514 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "id": "71d2c921-b334-4a23-9c3d-1eb102912a9e",
+  "prevIds": [
+    "00000000-0000-0000-0000-000000000000"
+  ],
+  "ddl": [
+    {
+      "name": "clients",
+      "entityType": "tables"
+    },
+    {
+      "name": "entries",
+      "entityType": "tables"
+    },
+    {
+      "name": "quick_tasks",
+      "entityType": "tables"
+    },
+    {
+      "name": "sessions",
+      "entityType": "tables"
+    },
+    {
+      "name": "timer",
+      "entityType": "tables"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "clients"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "name",
+      "entityType": "columns",
+      "table": "clients"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "archived_at",
+      "entityType": "columns",
+      "table": "clients"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(strftime('%Y-%m-%dT%H:%M:%fZ','now'))",
+      "generated": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "table": "clients"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "entries"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "day",
+      "entityType": "columns",
+      "table": "entries"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "client_id",
+      "entityType": "columns",
+      "table": "entries"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "activity",
+      "entityType": "columns",
+      "table": "entries"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "duration_minutes",
+      "entityType": "columns",
+      "table": "entries"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "source",
+      "entityType": "columns",
+      "table": "entries"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "quick_task_id",
+      "entityType": "columns",
+      "table": "entries"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "measured_minutes",
+      "entityType": "columns",
+      "table": "entries"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(strftime('%Y-%m-%dT%H:%M:%fZ','now'))",
+      "generated": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "table": "entries"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(strftime('%Y-%m-%dT%H:%M:%fZ','now'))",
+      "generated": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "table": "entries"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "deleted_at",
+      "entityType": "columns",
+      "table": "entries"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "quick_tasks"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "client_id",
+      "entityType": "columns",
+      "table": "quick_tasks"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "name",
+      "entityType": "columns",
+      "table": "quick_tasks"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "duration_minutes",
+      "entityType": "columns",
+      "table": "quick_tasks"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(strftime('%Y-%m-%dT%H:%M:%fZ','now'))",
+      "generated": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "table": "quick_tasks"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "token_hash",
+      "entityType": "columns",
+      "table": "sessions"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "expires_at",
+      "entityType": "columns",
+      "table": "sessions"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "timer"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "client_id",
+      "entityType": "columns",
+      "table": "timer"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "activity",
+      "entityType": "columns",
+      "table": "timer"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "day",
+      "entityType": "columns",
+      "table": "timer"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "started_at",
+      "entityType": "columns",
+      "table": "timer"
+    },
+    {
+      "columns": [
+        "client_id"
+      ],
+      "tableTo": "clients",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "RESTRICT",
+      "nameExplicit": false,
+      "name": "fk_entries_client_id_clients_id_fk",
+      "entityType": "fks",
+      "table": "entries"
+    },
+    {
+      "columns": [
+        "quick_task_id"
+      ],
+      "tableTo": "quick_tasks",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "SET NULL",
+      "nameExplicit": false,
+      "name": "fk_entries_quick_task_id_quick_tasks_id_fk",
+      "entityType": "fks",
+      "table": "entries"
+    },
+    {
+      "columns": [
+        "client_id"
+      ],
+      "tableTo": "clients",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "RESTRICT",
+      "nameExplicit": false,
+      "name": "fk_quick_tasks_client_id_clients_id_fk",
+      "entityType": "fks",
+      "table": "quick_tasks"
+    },
+    {
+      "columns": [
+        "client_id"
+      ],
+      "tableTo": "clients",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "RESTRICT",
+      "nameExplicit": false,
+      "name": "fk_timer_client_id_clients_id_fk",
+      "entityType": "fks",
+      "table": "timer"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "clients_pk",
+      "table": "clients",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "entries_pk",
+      "table": "entries",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "quick_tasks_pk",
+      "table": "quick_tasks",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "token_hash"
+      ],
+      "nameExplicit": false,
+      "name": "sessions_pk",
+      "table": "sessions",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "timer_pk",
+      "table": "timer",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        {
+          "value": "lower(\"name\")",
+          "isExpression": true
+        }
+      ],
+      "isUnique": true,
+      "where": null,
+      "origin": "manual",
+      "name": "clients_name_nocase",
+      "entityType": "indexes",
+      "table": "clients"
+    },
+    {
+      "columns": [
+        {
+          "value": "day",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "origin": "manual",
+      "name": "entries_day",
+      "entityType": "indexes",
+      "table": "entries"
+    },
+    {
+      "columns": [
+        {
+          "value": "client_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "origin": "manual",
+      "name": "quick_tasks_client_id",
+      "entityType": "indexes",
+      "table": "quick_tasks"
+    },
+    {
+      "columns": [
+        {
+          "value": "client_id",
+          "isExpression": false
+        },
+        {
+          "value": "lower(\"name\")",
+          "isExpression": true
+        }
+      ],
+      "isUnique": true,
+      "where": null,
+      "origin": "manual",
+      "name": "quick_tasks_client_name_nocase",
+      "entityType": "indexes",
+      "table": "quick_tasks"
+    },
+    {
+      "value": "length(trim(\"name\")) between 1 and 80",
+      "name": "clients_name_length",
+      "entityType": "checks",
+      "table": "clients"
+    },
+    {
+      "value": "\"day\" glob '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'",
+      "name": "entries_day_format",
+      "entityType": "checks",
+      "table": "entries"
+    },
+    {
+      "value": "length(trim(\"activity\")) between 1 and 120",
+      "name": "entries_activity_length",
+      "entityType": "checks",
+      "table": "entries"
+    },
+    {
+      "value": "\"duration_minutes\" between 1 and 1440",
+      "name": "entries_duration_range",
+      "entityType": "checks",
+      "table": "entries"
+    },
+    {
+      "value": "length(trim(\"name\")) between 1 and 80",
+      "name": "quick_tasks_name_length",
+      "entityType": "checks",
+      "table": "quick_tasks"
+    },
+    {
+      "value": "\"duration_minutes\" between 1 and 1440",
+      "name": "quick_tasks_duration_range",
+      "entityType": "checks",
+      "table": "quick_tasks"
+    },
+    {
+      "value": "id = 1",
+      "name": "timer_singleton",
+      "entityType": "checks",
+      "table": "timer"
+    },
+    {
+      "value": "length(trim(\"activity\")) between 1 and 120",
+      "name": "timer_activity_length",
+      "entityType": "checks",
+      "table": "timer"
+    }
+  ],
+  "renames": []
+}
