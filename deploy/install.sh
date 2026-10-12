@@ -265,6 +265,10 @@ install_self() {
 	local source_url tmp
 	source_url="https://api.github.com/repos/$REPO/contents/deploy/install.sh"
 	if [ -f "$0" ] && [ -r "$0" ] && [ "$0" != "bash" ] && [ "$0" != "sh" ]; then
+		# Lanciato come registro-ore-update: la sorgente e la destinazione coincidono, niente da copiare.
+		if [ "$(readlink -f "$0")" = "$(readlink -f "$UPDATE_CMD" 2>/dev/null || true)" ]; then
+			return 0
+		fi
 		install -m 755 "$0" "$UPDATE_CMD"
 		log "Script di aggiornamento copiato in $UPDATE_CMD."
 		return 0
@@ -408,11 +412,14 @@ summary() {
 	log ''
 	log 'Installazione completata.'
 	log "  Versione:  $TAG"
-	log "  Indirizzo: http://${ips:-<ip del container>}:$port"
+	log "  Indirizzo del servizio (solo per il reverse proxy): http://${ips:-<ip del container>}:$port"
 	log '  Aggiornamento successivo: sudo registro-ore-update'
 	log ''
-	log 'Promemoria: configura il reverse proxy verso questo indirizzo inoltrando'
-	log 'X-Forwarded-Proto, X-Forwarded-Host e X-Forwarded-For; accedi solo via HTTPS.'
+	log 'Promemoria: punta il reverse proxy a questo indirizzo e fai sì che inoltri'
+	log 'X-Forwarded-Proto e X-Forwarded-Host, e che AGGIUNGA alla catena X-Forwarded-For'
+	log "l'IP del client (XFF_DEPTH=1 = un solo proxy fidato davanti all'app: se ne hai due, alza"
+	log 'XFF_DEPTH in /etc/registro-ore/registro-ore.env). Il login funziona solo via HTTPS sul proxy:'
+	log "aprire direttamente l'indirizzo qui sopra non permette l'accesso."
 	log "Il database è in $DATA_DIR ed è coperto dai backup vzdump del container."
 }
 
