@@ -58,10 +58,18 @@
 	<input type="hidden" name="id" value={id} />
 	{@render children?.()}
 	<Button
-		type={confirming ? 'submit' : 'button'}
+		type="button"
 		variant={confirming ? 'danger' : variant}
 		aria-label={ariaLabel}
-		onclick={() => (confirming = true)}
+		onclick={(event) => {
+			if (!confirming) {
+				confirming = true;
+				return;
+			}
+			// Il tipo resta "button": cambiarlo a "submit" dentro lo stesso click farebbe partire
+			// l'invio al primo tocco. Il secondo tocco invia esplicitamente.
+			event.currentTarget.form?.requestSubmit();
+		}}
 	>
 		{confirming ? confirmLabel : label}
 	</Button>
