@@ -6,7 +6,11 @@ import { createSession } from '#lib/server/repo.js';
 import type { Actions } from './$types';
 
 const MAX_FAILURES = 5;
+// Tetto complessivo, indipendente dall'IP: con un solo utente protegge dal brute force anche
+// se l'indirizzo del client è falsificabile (proxy che non sovrascrive X-Forwarded-For).
+const MAX_GLOBAL_FAILURES = 20;
 const WINDOW_MS = 15 * 60 * 1000;
+const MAX_TRACKED_IPS = 10_000;
 
 interface Attempt {
 	failures: number;
@@ -14,14 +18,27 @@ interface Attempt {
 }
 
 const attempts = new Map<string, Attempt>();
+let globalAttempt: Attempt = { failures: 0, firstAt: 0 };
+
+/** Elimina i contatori scaduti: la mappa non cresce senza limite sotto attacco. */
+function pruneAttempts(now: number) {
+	for (const [key, value] of attempts) {
+		if (now - value.firstAt > WINDOW_MS) attempts.delete(key);
+	}
+}
 
 export const actions: Actions = {
 	default: async ({ request, cookies, getClientAddress }) => {
 		const ip = getClientAddress();
 		const now = Date.now();
+		if (attempts.size > MAX_TRACKED_IPS) pruneAttempts(now);
+		if (now - globalAttempt.firstAt > WINDOW_MS) globalAttempt = { failures: 0, firstAt: now };
 		const attempt = attempts.get(ip);
 		if (attempt && now - attempt.firstAt > WINDOW_MS) attempts.delete(ip);
-		else if (attempt && attempt.failures >= MAX_FAILURES) {
+		if (
+			globalAttempt.failures >= MAX_GLOBAL_FAILURES ||
+			(attempts.get(ip)?.failures ?? 0) >= MAX_FAILURES
+		) {
 			return fail(429, { error: 'Troppi tentativi. Riprova tra qualche minuto.' });
 		}
 
@@ -31,10 +48,13 @@ export const actions: Actions = {
 
 		if (!timingSafeEqual(digest, createHash('sha256').update(APP_PASSWORD).digest())) {
 			const previous = attempts.get(ip);
-			attempts.set(ip, {
-				failures: (previous?.failures ?? 0) + 1,
-				firstAt: previous?.firstAt ?? now
-			});
+			if (attempts.size < MAX_TRACKED_IPS || previous) {
+				attempts.set(ip, {
+					failures: (previous?.failures ?? 0) + 1,
+					firstAt: previous?.firstAt ?? now
+				});
+			}
+			globalAttempt.failures += 1;
 			return fail(400, { error: 'Password errata.' });
 		}
 
