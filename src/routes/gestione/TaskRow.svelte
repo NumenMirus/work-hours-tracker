@@ -146,7 +146,7 @@
 	}
 
 	.duration-cell {
-		flex: 0 0 10ch;
+		flex: 0 0 17ch;
 	}
 
 	.client {

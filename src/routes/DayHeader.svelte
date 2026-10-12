@@ -83,7 +83,7 @@
 			z-index: var(--z-sticky);
 			background: var(--bg);
 			border-bottom: 1px solid var(--border);
-			margin: 0 calc(-1 * var(--space-4));
+			margin: 0 calc(-1 * var(--space-4)) var(--space-4);
 			padding: var(--space-3) var(--space-4);
 		}
 	}

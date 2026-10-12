@@ -285,7 +285,7 @@
 	}
 
 	.duration-cell {
-		flex: 0 0 10ch;
+		flex: 0 0 17ch;
 	}
 
 	.field {
@@ -383,8 +383,10 @@
 			align-items: stretch;
 		}
 
+		/* In colonna il flex-basis diventerebbe un'altezza: i campi prendono quella del contenuto. */
+		.row :global(.field),
 		.duration-cell {
-			flex: 1 1 auto;
+			flex: 0 0 auto;
 		}
 	}
 </style>

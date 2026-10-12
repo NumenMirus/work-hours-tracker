@@ -171,7 +171,7 @@
 	}
 
 	.duration :global(input) {
-		width: 10ch;
+		width: 17ch;
 	}
 
 	/* Il bottone è allineato in fondo alla riga: la sua altezza è quella del campo vicino. */
