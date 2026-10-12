@@ -14,7 +14,7 @@ const MAX_SUGGESTIONS = 50;
 
 /**
  * Selezione di una registrazione: il nome del cliente arriva dal join, perché
- * l'attività e la durata sono uno snapshot while il cliente è ancora vivo.
+ * l'attività e la durata sono uno snapshot mentre il cliente è ancora vivo.
  */
 const entrySelection = {
 	id: entries.id,
@@ -386,10 +386,12 @@ export function updateEntry(
 
 	const client = db.select().from(clients).where(eq(clients.id, input.clientId)).get();
 	if (!client) throw new DomainError('not_found', 'Cliente non trovato.');
-	if (client.archivedAt !== null) {
+	// Si può correggere una registrazione di un cliente archiviato finché resta su quel cliente;
+	// spostarla su un cliente archiviato no.
+	if (client.archivedAt !== null && input.clientId !== current.clientId) {
 		throw new DomainError(
 			'archived',
-			'Il cliente è archiviato: ripristinalo per correggere la registrazione.'
+			'Il cliente è archiviato: ripristinalo per spostare la registrazione su di lui.'
 		);
 	}
 

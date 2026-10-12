@@ -153,6 +153,34 @@ describe('clienti', () => {
 		expect(() => deleteClient(db, rossi.id)).toThrowError(/archivialo/);
 	});
 
+	it('corregge una registrazione di un cliente archiviato ma non la sposta su un archiviato', () => {
+		const { rossi, bianchi } = seed();
+		const entry = addManualEntry(db, {
+			day: '2026-10-12',
+			clientId: rossi.id,
+			activity: 'Riunione',
+			durationMinutes: 15
+		});
+		setClientArchived(db, rossi.id, true);
+		setClientArchived(db, bianchi.id, true);
+
+		const updated = updateEntry(db, entry.id, {
+			clientId: rossi.id,
+			activity: 'Riunione',
+			durationMinutes: 45
+		});
+		expect(updated.durationMinutes).toBe(45);
+		expect(getDayTotals(db, '2026-10-12').totalMinutes).toBe(45);
+
+		expect(() =>
+			updateEntry(db, entry.id, {
+				clientId: bianchi.id,
+				activity: 'Riunione',
+				durationMinutes: 45
+			})
+		).toThrowError(/archiviato/);
+	});
+
 	it('non elimina un cliente con registrazioni, neppure eliminate', () => {
 		const { rossi, assistenza } = seed();
 		const entry = addQuickEntry(db, { taskId: assistenza.id, day: '2026-10-12' });

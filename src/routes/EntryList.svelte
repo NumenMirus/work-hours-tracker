@@ -122,6 +122,9 @@
 									required
 									aria-invalid={editFieldError('clientId') ? 'true' : undefined}
 								>
+									{#if !clients.some((client) => client.id === entry.clientId)}
+										<option value={entry.clientId}>{entry.clientName} (archiviato)</option>
+									{/if}
 									{#each clients as client (client.id)}
 										<option value={client.id}>{client.name}</option>
 									{/each}
