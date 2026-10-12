@@ -15,6 +15,7 @@
 
 		<div class="field">
 			<label for="password">Password</label>
+			<!-- svelte-ignore a11y_autofocus -- pagina con un solo campo: il focus iniziale è l'azione attesa. -->
 			<input
 				id="password"
 				name="password"

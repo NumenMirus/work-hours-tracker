@@ -16,6 +16,7 @@
 <div class="toast-region" role="status" aria-live="polite">
 	{#if toastState.current}
 		{@const toast = toastState.current}
+		<!-- svelte-ignore a11y_no_static_element_interactions -- il toast non è interattivo: i gestori servono solo a sospendere il timer di chiusura mentre lo si legge. -->
 		<div
 			class="toast"
 			transition:fly={{ y: 8, duration: duration() }}
