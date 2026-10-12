@@ -13,3 +13,60 @@ npm run dev
 ```
 
 Comandi utili: `npm run check`, `npm run lint`, `npm run test:unit -- --run`, `npm run test:e2e`.
+
+## Installazione su Proxmox (LXC Debian 13)
+
+L'installazione avviene dentro il container, senza Docker: lo script scarica la
+release da GitHub, scrive l'unit systemd e riavvia il servizio.
+
+Prima di tutto serve un personal access token **fine-grained** con permesso
+`Contents: Read-only` sul solo repository `NumenMirus/work-hours-tracker`
+(sezione _Settings → Developer settings → Personal access tokens → Fine-grained
+tokens_). Esportalo nella shell del container come `TOKEN`.
+
+Prima installazione:
+
+```sh
+curl -fsSL -H "Authorization: Bearer $TOKEN" \
+  https://raw.githubusercontent.com/NumenMirus/work-hours-tracker/main/deploy/install.sh \
+  | sudo GITHUB_TOKEN="$TOKEN" bash
+```
+
+Aggiornamenti successivi (lo script si auto-installa in
+`/usr/local/sbin/registro-ore-update` e rieseguibile, quindi idempotente):
+
+```sh
+sudo registro-ore-update
+```
+
+Se `/etc/registro-ore/registro-ore.env` non esiste ancora, la password viene
+chieduta due volte durante la prima installazione; per unattended si può passare
+`APP_PASSWORD=...` (min 8 caratteri). `PORT` (default `3000`) vale solo alla
+prima installazione, poi viene letto dall'env file. `VERSION=v0.1.0` installa un
+tag preciso, `FORCE=1` reinstalla anche la versione già attiva.
+
+Dove stanno le cose:
+
+- configurazione e password: `/etc/registro-ore/registro-ore.env`
+- token GitHub: `/etc/registro-ore/install.env`
+- database SQLite: `/var/lib/registro-ore/registro-ore.sqlite`
+- applicazione: `/opt/registro-ore/current` (le ultime 3 release in
+  `/opt/registro-ore/releases`)
+- log: `journalctl -u registro-ore -f`
+
+Il database è coperto dai backup `vzdump` del container: non serve configurare
+backup applicativi. Dopo l'installazione va configurato il reverse proxy perché
+inoltrino `X-Forwarded-Proto`, `X-Forwarded-Host` e `X-Forwarded-For`, e si
+accede solo via HTTPS.
+
+### Pubblicare una release
+
+Le release vengono costruite da GitHub Actions al push di un tag `v*`:
+
+```sh
+git tag v0.1.0 && git push origin v0.1.0
+```
+
+Il workflow esegue `check`, `lint`, test unitari e build, poi allega alla release
+`registro-ore-v0.1.0.tar.gz` (con `build/`, `drizzle/` e `VERSION`) e il relativo
+file `.sha256`.

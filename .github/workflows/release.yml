@@ -1,0 +1,48 @@
+name: release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build e pubblicazione release
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: Dipendenze
+        run: npm ci
+
+      - name: Controlli
+        run: |
+          npm run check
+          npm run lint
+          npm run test:unit -- --run
+
+      - name: Build
+        run: npm run build
+
+      - name: Pacchetto
+        run: |
+          mkdir -p dist/registro-ore
+          cp -r build drizzle package.json dist/registro-ore/
+          echo "$GITHUB_REF_NAME" > dist/registro-ore/VERSION
+          tar -C dist -czf "registro-ore-$GITHUB_REF_NAME.tar.gz" registro-ore
+          sha256sum "registro-ore-$GITHUB_REF_NAME.tar.gz" > "registro-ore-$GITHUB_REF_NAME.tar.gz.sha256"
+
+      - name: Pubblica la release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" registro-ore-*.tar.gz registro-ore-*.tar.gz.sha256 --generate-notes
