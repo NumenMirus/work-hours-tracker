@@ -1,8 +1,9 @@
 <script lang="ts">
-	import type { Snippet } from 'svelte';
 	import { enhance, type SubmitFunction } from '$app/forms';
 	import Button from './Button.svelte';
 
+	/** Tempo prima che lo stato "Conferma" torni a quello iniziale. */
+	const CONFIRM_WINDOW_MS = 4000;
 	interface Props {
 		/** Etichetta del primo passo. */
 		label: string;
@@ -12,13 +13,8 @@
 		formAction: string;
 		/** Valore del campo nascosto `id`. */
 		id: number;
-		/** Secondi prima di tornare allo stato iniziale. */
-		timeout?: number;
 		variant?: 'danger' | 'ghost';
 		ariaLabel?: string;
-		class?: string;
-		/** Campi nascosti aggiuntivi da passare al form. */
-		children?: Snippet;
 		/** `use:enhance` da applicare al form, tipicamente `withToast()`. */
 		onenhance?: SubmitFunction;
 	}
@@ -28,11 +24,8 @@
 		confirmLabel = 'Conferma',
 		formAction,
 		id,
-		timeout = 4,
 		variant = 'ghost',
 		ariaLabel = undefined,
-		class: className = '',
-		children,
 		onenhance
 	}: Props = $props();
 
@@ -40,7 +33,7 @@
 
 	$effect(() => {
 		if (!confirming) return;
-		const timer = setTimeout(() => (confirming = false), timeout * 1000);
+		const timer = setTimeout(() => (confirming = false), CONFIRM_WINDOW_MS);
 		return () => clearTimeout(timer);
 	});
 </script>
@@ -49,14 +42,13 @@
 <form
 	method="POST"
 	action={formAction}
-	class="confirm {className}"
+	class="confirm"
 	use:enhance={(input) => {
 		confirming = false;
 		return onenhance?.(input);
 	}}
 >
 	<input type="hidden" name="id" value={id} />
-	{@render children?.()}
 	<Button
 		type="button"
 		variant={confirming ? 'danger' : variant}

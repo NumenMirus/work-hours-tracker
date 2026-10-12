@@ -7,21 +7,12 @@
 		value: string;
 		error?: string | null;
 		label: string;
-		/** Id di un altro elemento da associare al campo con `aria-describedby`. */
-		describedBy?: string | undefined;
 	}
 
-	let {
-		id,
-		value = $bindable(),
-		error = null,
-		label,
-		describedBy = undefined,
-		...rest
-	}: Props = $props();
+	let { id, value = $bindable(), error = null, label, ...rest }: Props = $props();
 
 	const errorId = $derived(`${id}-error`);
-	const described = $derived([describedBy, error ? errorId : null].filter(Boolean).join(' '));
+	const described = $derived(error ? errorId : undefined);
 </script>
 
 <div class="field">

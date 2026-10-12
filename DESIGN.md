@@ -221,7 +221,7 @@ toast. Nessun'altra coppia "bordo + ombra morbida" sulla stessa superficie.
 
 ### Task rapida (componente firma)
 
-- **Shape:** raggio 8 px, altezza minima 52 px, bordo 1 px `--border-strong`, sfondo `--surface`. Non è un `button` con handler: è un `form` con `method="POST"` e `use:enhance`, perché l'azione è un'invio e deve funzionare anche senza JavaScript.
+- **Shape:** raggio `--radius-md` (10 px), altezza minima 52 px, bordo 1 px `--border-strong`, sfondo `--surface`. Non è un `button` con handler: è un `form` con `method="POST"` e `use:enhance`, perché l'azione è un'invio e deve funzionare anche senza JavaScript.
 - **Content:** nome dell'attività a peso 500 in `--ink`, e sotto la durata `+20 min` a peso 600 in `--primary` con cifre tabulari.
 - **Feedback:** al successo la durata viene sostituita per 1 s da un'icona Check e dalla parola "Aggiunto", con sfondo `--primary-soft`. Solo feedback: nessuna animazione di ingresso, nessuna pulsazione.
 - **States:** mai disabilitata durante l'invio. Ogni tocco è una registrazione distinta, e disabilitare l'interfaccia durante il salvataggio farebbe perdere un tocco.

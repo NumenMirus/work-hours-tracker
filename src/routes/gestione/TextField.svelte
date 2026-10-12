@@ -6,13 +6,12 @@
 		label: string;
 		value?: string;
 		error?: string | null;
-		describedBy?: string | undefined;
 	}
 
-	let { id, label, value = $bindable(''), error = null, describedBy, ...rest }: Props = $props();
+	let { id, label, value = $bindable(''), error = null, ...rest }: Props = $props();
 
 	const errorId = $derived(`${id}-error`);
-	const described = $derived([describedBy, error ? errorId : null].filter(Boolean).join(' '));
+	const described = $derived(error ? errorId : undefined);
 </script>
 
 <div class="field">
