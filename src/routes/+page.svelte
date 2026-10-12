@@ -43,8 +43,8 @@
 				/>
 			{/if}
 
-			<!-- Senza clienti non c'è nulla da misurare: il timer non si avvia. -->
-			{#if data.clients.length > 0}
+			<!-- Un timer già in corso va sempre fermabile, anche se il suo cliente è stato archiviato; senza clienti attivi non se ne avvia uno nuovo. -->
+			{#if timer || data.clients.length > 0}
 				<TimerPanel
 					{timer}
 					day={data.day}
