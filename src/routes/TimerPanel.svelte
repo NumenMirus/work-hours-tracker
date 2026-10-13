@@ -188,7 +188,7 @@
 		</form>
 	{:else}
 		<div class="idle">
-			<p class="hint">Per misurare un'attività mentre la fai. Ricordati di fermarlo.</p>
+			<p class="hint">Misura un'attività mentre la fai. Ricordati di fermarlo.</p>
 			<Button type="button" variant="secondary" onclick={() => (starting = true)}>
 				Avvia timer…
 			</Button>

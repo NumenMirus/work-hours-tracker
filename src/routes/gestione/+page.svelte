@@ -130,10 +130,11 @@
 		<section aria-labelledby="tasks-heading">
 			<h2 id="tasks-heading">Task rapide</h2>
 			<p class="hint">
-				Ogni task rapida aggiunge la sua durata con un tocco, nella giornata corrente.
+				Un tocco in Giornata aggiunge la durata della task al giorno che stai guardando. Eliminare
+				una task non cancella le registrazioni già fatte.
 			</p>
 			{#if activeClients.length === 0}
-				<p class="empty">Tutti i clienti sono archiviati. Ripristinalo uno per aggiungere task.</p>
+				<p class="empty">Tutti i clienti sono archiviati. Ripristinane uno per creare task.</p>
 			{/if}
 			<form
 				method="POST"
@@ -238,7 +239,7 @@
 			{@render clientForm()}
 			{@render clientList()}
 			<p class="hint">
-				Un cliente con task o registrazioni non si elimina: si archivia e sparisce dalla giornata.
+				Un cliente con task o registrazioni non si elimina: archivialo e sparisce dalla Giornata.
 			</p>
 		</section>
 	{/if}

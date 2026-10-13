@@ -101,7 +101,7 @@
 
 	{#if entries.length === 0}
 		<div class="empty">
-			<p>Nessuna registrazione per questo giorno. Tocca una task rapida per aggiungere tempo.</p>
+			<p>Nessuna registrazione per questo giorno. Scegli una task rapida per aggiungere tempo.</p>
 		</div>
 	{:else}
 		<ul class="list">
@@ -229,7 +229,7 @@
 	<!-- Il toast chiude da solo: qui le eliminate restano recuperabili, anche solo da tastiera. -->
 	{#if deletedEntries.length > 0}
 		<details class="deleted">
-			<summary>Eliminate ({deletedEntries.length})</summary>
+			<summary>Registrazioni eliminate ({deletedEntries.length})</summary>
 			<ul class="deleted-list">
 				{#each deletedEntries as entry (entry.id)}
 					<li>

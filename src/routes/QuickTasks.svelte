@@ -53,7 +53,8 @@
 		</div>
 	{:else if groups.length === 0}
 		<div class="empty">
-			<p>Nessuna task rapida. Creane una in Gestione, ad esempio Assistenza +20 min.</p>
+			<p>Nessuna task rapida: creane una in Gestione, ad esempio Assistenza +20 min.</p>
+			<a href={resolve('/gestione')}>Vai a Gestione</a>
 		</div>
 	{:else}
 		{#each groups as group (group.clientId)}
