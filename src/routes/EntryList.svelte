@@ -311,9 +311,10 @@
 		flex: none;
 	}
 
-	/* Su un puntatore fine le azioni compaiono al passaggio del mouse o del focus:
-	   senza hover (touch) restano sempre visibili. */
-	@media (hover: hover) and (pointer: fine) {
+	/* Le azioni di riga compaiono al passaggio del mouse o del focus solo se il dispositivo è
+	   davvero a puntatore fine: un portatile con schermo touch (any-pointer: coarse) le tiene
+	   sempre visibili, perché con il dito non esiste hover. */
+	@media (hover: hover) and (pointer: fine) and (not (any-pointer: coarse)) {
 		.actions {
 			opacity: 0;
 			transition: opacity var(--dur-fast) var(--ease-out);
@@ -338,9 +339,16 @@
 			color var(--dur-fast) var(--ease-out);
 	}
 
-	.icon:hover {
+	.icon:active {
 		background: var(--surface-2);
 		color: var(--ink);
+	}
+
+	@media (hover: hover) {
+		.icon:hover {
+			background: var(--surface-2);
+			color: var(--ink);
+		}
 	}
 
 	/* Il form di eliminazione contiene un solo bottone: non aggiunge layout. */
@@ -448,9 +456,16 @@
 		cursor: pointer;
 	}
 
-	.deleted summary:hover {
+	.deleted summary:active {
 		background: var(--surface-2);
 		color: var(--ink);
+	}
+
+	@media (hover: hover) {
+		.deleted summary:hover {
+			background: var(--surface-2);
+			color: var(--ink);
+		}
 	}
 
 	.deleted-list {
@@ -483,16 +498,5 @@
 		color: var(--muted);
 		text-decoration: line-through;
 		overflow-wrap: anywhere;
-	}
-
-	@media (pointer: coarse) {
-		.icon {
-			width: var(--control-h-coarse);
-			height: var(--control-h-coarse);
-		}
-
-		.deleted summary {
-			min-height: var(--control-h-coarse);
-		}
 	}
 </style>
