@@ -271,6 +271,7 @@
 		font-size: var(--text-base);
 		font-weight: 600;
 		margin-bottom: var(--space-2);
+		overflow-wrap: anywhere;
 	}
 
 	.row {

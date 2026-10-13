@@ -97,6 +97,11 @@
 		font-weight: 600;
 		color: var(--muted);
 		margin-bottom: var(--space-2);
+		overflow-wrap: anywhere;
+	}
+
+	.tasks form {
+		max-width: 100%;
 	}
 
 	.tasks {
@@ -106,6 +111,7 @@
 	}
 
 	button {
+		max-width: 100%;
 		display: flex;
 		flex-direction: column;
 		align-items: flex-start;
@@ -136,6 +142,7 @@
 		font-size: var(--text-sm);
 		font-weight: 500;
 		color: var(--ink);
+		overflow-wrap: anywhere;
 	}
 
 	.duration {
