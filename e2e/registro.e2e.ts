@@ -15,6 +15,14 @@ function parseMinutes(label: string): number {
 	return (hours ? Number(hours[1]) * 60 : 0) + (minutes ? Number(minutes[1]) : 0);
 }
 
+/**
+ * Dopo un'azione SvelteKit riporta il focus su `body` e l'app lo rimette dov'era un attimo
+ * dopo: aspettare quell'istante evita di asserire sul focus prima che sia stato ripristinato.
+ */
+async function settleFocus(page: Page): Promise<void> {
+	await page.waitForTimeout(300);
+}
+
 /** Minuti letti da un campo durata precompilato con `formatDurationInput` (`20`, `1:30`). */
 function inputMinutes(value: string): number {
 	const [hours, minutes] = value.split(':');
@@ -132,7 +140,7 @@ test.describe.serial('Registro ore', () => {
 
 			// Un cliente con task non si elimina: si archivia.
 			await page.getByRole('button', { name: 'Elimina Rossi' }).click();
-			await page.getByRole('button', { name: 'Elimina Rossi' }).click();
+			await page.getByRole('button', { name: 'Conferma eliminazione di Rossi' }).click();
 			await expect(page.getByText(CLIENT_IN_USE)).toBeVisible();
 			await expect(clientRows()).toHaveCount(1);
 		});
@@ -194,7 +202,7 @@ test.describe.serial('Registro ore', () => {
 
 			// Un cliente con registrazioni non si elimina nemmeno dopo le task.
 			await page.getByRole('button', { name: 'Elimina Rossi' }).click();
-			await page.getByRole('button', { name: 'Elimina Rossi' }).click();
+			await page.getByRole('button', { name: 'Conferma eliminazione di Rossi' }).click();
 			await expect(page.getByText(CLIENT_IN_USE)).toBeVisible();
 		});
 
@@ -294,11 +302,59 @@ test.describe.serial('Conferma in due passi', () => {
 
 		// Primo tocco: il bottone si arma e la task resta in lista.
 		await page.getByRole('button', { name: 'Elimina Prova' }).click();
-		await expect(page.getByRole('button', { name: 'Elimina Prova' })).toHaveText('Conferma');
+		const armed = page.getByRole('button', { name: 'Conferma eliminazione di Prova' });
+		await expect(armed).toHaveText('Conferma');
 		await expect(taskRows).toHaveCount(1);
 
 		// Secondo tocco: solo ora la task viene eliminata.
-		await page.getByRole('button', { name: 'Elimina Prova' }).click();
+		await armed.click();
 		await expect(taskRows).toHaveCount(0);
+	});
+
+	test('da tastiera: il focus resta, Ctrl+Z annulla e le eliminate si ripristinano', async ({
+		page
+	}) => {
+		await page.goto('/login');
+		await page.getByLabel('Password').fill(PASSWORD);
+		await page.getByRole('button', { name: 'Entra' }).click();
+		await expect(total(page)).toBeVisible();
+
+		const minutes = async () => parseMinutes(await total(page).innerText());
+		const before = await minutes();
+
+		await test.step('aggiunta con Invio: il focus resta sulla task', async () => {
+			const quick = page.getByRole('button', { name: /^Assistenza/ });
+			await quick.focus();
+			await page.keyboard.press('Enter');
+			await expect.poll(minutes).toBe(before + 20);
+			await settleFocus(page);
+			await expect(quick).toBeFocused();
+
+			// Ctrl/⌘+Z esegue l'Annulla del toast anche senza raggiungerlo con Tab.
+			await page.keyboard.press('ControlOrMeta+Z');
+			await expect(page.getByText('Aggiunta annullata.')).toBeVisible();
+			await expect.poll(minutes).toBe(before);
+			await settleFocus(page);
+			await expect(quick).toBeFocused();
+		});
+
+		await test.step('eliminazione da tastiera: il focus passa alla riga vicina', async () => {
+			const list = page.getByRole('region', { name: 'Registrazioni' });
+			const remove = list.getByRole('button', { name: /^Elimina / }).first();
+			await remove.focus();
+			await page.keyboard.press('Enter');
+			await expect.poll(minutes).toBeLessThan(before);
+			await expect(list.locator(':focus')).toHaveCount(1);
+		});
+
+		await test.step('dopo la chiusura del toast la registrazione si recupera dall’elenco', async () => {
+			const list = page.getByRole('region', { name: 'Registrazioni' });
+			await list.getByText(/^Eliminate \(\d+\)$/).click();
+			await list
+				.getByRole('button', { name: /^Ripristina / })
+				.first()
+				.click();
+			await expect.poll(minutes).toBe(before);
+		});
 	});
 });
