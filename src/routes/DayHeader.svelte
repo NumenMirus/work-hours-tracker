@@ -78,13 +78,20 @@
 
 	@media (max-width: 959px) {
 		.day-header {
-			position: sticky;
-			top: 0;
-			z-index: var(--z-sticky);
 			background: var(--bg);
 			border-bottom: 1px solid var(--border);
 			margin: 0 calc(-1 * var(--space-4)) var(--space-4);
 			padding: var(--space-3) var(--space-4);
+		}
+	}
+
+	/* In orizzontale su telefono (altezza < 560px) un'intestazione fissa si mangerebbe quasi
+	   metà schermo: resta fissa solo se c'è spazio per il contenuto che scorre sotto. */
+	@media (max-width: 959px) and (min-height: 560px) {
+		.day-header {
+			position: sticky;
+			top: 0;
+			z-index: var(--z-sticky);
 		}
 	}
 
@@ -110,8 +117,14 @@
 			border-color var(--dur-fast) var(--ease-out);
 	}
 
-	.arrow:hover {
+	.arrow:active {
 		background: var(--surface-2);
+	}
+
+	@media (hover: hover) {
+		.arrow:hover {
+			background: var(--surface-2);
+		}
 	}
 
 	.date {
@@ -124,8 +137,10 @@
 		cursor: pointer;
 	}
 
-	.date:hover {
-		background: var(--surface-2);
+	@media (hover: hover) {
+		.date:hover {
+			background: var(--surface-2);
+		}
 	}
 
 	.date:focus-within {
@@ -165,9 +180,16 @@
 			color var(--dur-fast) var(--ease-out);
 	}
 
-	.today:hover {
+	.today:active {
 		background: var(--surface-2);
 		color: var(--ink);
+	}
+
+	@media (hover: hover) {
+		.today:hover {
+			background: var(--surface-2);
+			color: var(--ink);
+		}
 	}
 
 	.total {
@@ -196,15 +218,14 @@
 		}
 	}
 
-	@media (pointer: coarse) {
-		.arrow,
-		.date,
-		.today {
-			min-height: var(--control-h-coarse);
-		}
-
-		.arrow {
-			height: var(--control-h-coarse);
+	/* Telefono in verticale: la navigazione occupa la prima riga e il totale una riga propria a
+	   tutta larghezza (etichetta a sinistra, valore a destra), che si legge con un'occhiata. */
+	@media (max-width: 559px) {
+		.total {
+			flex-direction: row;
+			align-items: baseline;
+			justify-content: space-between;
+			flex: 1 1 100%;
 		}
 	}
 </style>
