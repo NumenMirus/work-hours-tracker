@@ -123,7 +123,10 @@ export const actions: Actions = {
 		const day = readDay(form);
 		const taskId = readId(form, 'taskId');
 		if (!day || taskId === null) {
-			return fail(400, { action: 'addQuick', error: 'Task non valida.' });
+			return fail(400, {
+				action: 'addQuick',
+				error: 'Questa task non esiste più: ricarica la pagina.'
+			});
 		}
 		try {
 			const entry = addQuickEntry(db, { taskId, day });
@@ -162,7 +165,7 @@ export const actions: Actions = {
 			const entry = addManualEntry(db, { day, clientId, activity, durationMinutes: minutes });
 			return {
 				toast: {
-					message: `${entry.activity} ${formatDuration(entry.durationMinutes)} aggiunta`,
+					message: `${entry.activity} +${formatDuration(entry.durationMinutes)} · ${entry.clientName}`,
 					action: { label: 'Annulla', formAction: `?d=${day}&/undoAdd`, entryId: entry.id }
 				}
 			};
@@ -219,7 +222,7 @@ export const actions: Actions = {
 			const entry = softDeleteEntry(db, id);
 			return {
 				toast: {
-					message: 'Registrazione eliminata',
+					message: `Eliminata: ${entry.activity} · ${formatDuration(entry.durationMinutes)}`,
 					action: {
 						label: 'Ripristina',
 						formAction: `?d=${entry.day}&/restoreEntry`,
@@ -256,8 +259,12 @@ export const actions: Actions = {
 			return fail(404, { action: 'restoreEntry', error: 'Registrazione non trovata.' });
 		}
 		try {
-			restoreEntry(db, id);
-			return { toast: { message: 'Registrazione ripristinata' } };
+			const entry = restoreEntry(db, id);
+			return {
+				toast: {
+					message: `Ripristinata: ${entry.activity} · ${formatDuration(entry.durationMinutes)}`
+				}
+			};
 		} catch (error) {
 			return failWith('restoreEntry', error, { id });
 		}
@@ -306,7 +313,7 @@ export const actions: Actions = {
 			});
 			return {
 				toast: {
-					message: `${entry.activity} ${formatDuration(entry.durationMinutes)} registrata`
+					message: `${entry.activity} +${formatDuration(entry.durationMinutes)} · ${entry.clientName}`
 				}
 			};
 		} catch (error) {
