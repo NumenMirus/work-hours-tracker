@@ -27,7 +27,7 @@ Stack: SvelteKit 3 + Svelte 5 (runes) + TypeScript 6, Vite 8, `adapter-node`, SQ
 
 - `src/lib/server/` — server-only: `schema.ts` (Drizzle tables, source of truth), `db.ts` (`createDb`, `getDb`, migrations on open), `repo.ts`, `errors.ts`.
 - `src/lib/` — shared: `types.ts`, `duration.ts`, `day.ts`, `enhance.ts`, `toast.svelte.ts`, `components/` (Button, DurationField, RunningClock, ConfirmButton, Toast).
-- `src/routes/` — `+page*` (day view; local components `DayHeader`, `QuickTasks`, `ManualEntryForm`, `EntryList`, `TimerPanel`), `gestione/` (quick tasks + clients CRUD), `login/`, `logout/`.
+- `src/routes/` — `+page*` (day view; local components `DayHeader`, `QuickTasks`, `ManualEntryForm`, `EntryList`, `TimerPanel`), `gestione/` (quick tasks + clients CRUD), `consuntivo/` (period report + `csv/` download; pure logic in `src/lib/report.ts`), `login/`, `logout/`.
 - `drizzle/` — generated migrations (`<timestamp>_<name>/migration.sql` + `snapshot.json`). Committed, never hand-edited.
 - `e2e/` — Playwright. `deploy/install.sh` + `.github/workflows/release.yml` — release/install.
 

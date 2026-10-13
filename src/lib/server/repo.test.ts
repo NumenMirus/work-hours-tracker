@@ -13,6 +13,7 @@ import {
 	getTimer,
 	listActivitySuggestions,
 	listEntries,
+	listPeriodEntries,
 	listDeletedEntries,
 	listQuickTasks,
 	restoreEntry,
@@ -401,5 +402,34 @@ describe('sessioni', () => {
 	it('rifiuta token assenti o inventati', () => {
 		expect(validateSession(db, undefined)).toBe(false);
 		expect(validateSession(db, 'token-inventato')).toBe(false);
+	});
+});
+
+describe('listPeriodEntries', () => {
+	it('include gli estremi, esclude fuori periodo ed eliminate, filtra per cliente', () => {
+		const { rossi, bianchi, assistenza } = seed();
+		addQuickEntry(db, { taskId: assistenza.id, day: '2026-09-30' });
+		addQuickEntry(db, { taskId: assistenza.id, day: '2026-10-01' });
+		const ultimo = addQuickEntry(db, { taskId: assistenza.id, day: '2026-10-31' });
+		addQuickEntry(db, { taskId: assistenza.id, day: '2026-11-01' });
+		const eliminata = addQuickEntry(db, { taskId: assistenza.id, day: '2026-10-15' });
+		softDeleteEntry(db, eliminata.id);
+		addManualEntry(db, {
+			day: '2026-10-15',
+			clientId: bianchi.id,
+			activity: 'Riunione',
+			durationMinutes: 30
+		});
+
+		const all = listPeriodEntries(db, { from: '2026-10-01', to: '2026-10-31', clientId: null });
+		expect(all.map((e) => e.day)).toEqual(['2026-10-01', '2026-10-15', '2026-10-31']);
+		expect(all.at(-1)?.id).toBe(ultimo.id);
+
+		const soloRossi = listPeriodEntries(db, {
+			from: '2026-10-01',
+			to: '2026-10-31',
+			clientId: rossi.id
+		});
+		expect(soloRossi.map((e) => e.clientName)).toEqual(['Rossi', 'Rossi']);
 	});
 });

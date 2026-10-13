@@ -28,6 +28,9 @@
 			<a href={resolve('/gestione')} aria-current={isCurrent('/gestione') ? 'page' : undefined}
 				>Gestione</a
 			>
+			<a href={resolve('/consuntivo')} aria-current={isCurrent('/consuntivo') ? 'page' : undefined}
+				>Consuntivo</a
+			>
 		</nav>
 		<div class="end">
 			{#if data.timer}

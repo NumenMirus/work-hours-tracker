@@ -360,6 +360,40 @@ test.describe.serial('Conferma in due passi', () => {
 	});
 });
 
+test.describe('Consuntivo', () => {
+	// Dopo lo scenario principale: usa le registrazioni di oggi create lì.
+	test('mostra il totale del periodo e scarica il CSV', async ({ page }) => {
+		await page.goto('/login');
+		await page.getByLabel('Password').fill(PASSWORD);
+		await page.getByRole('button', { name: 'Entra' }).click();
+		await page.getByRole('link', { name: 'Consuntivo', exact: true }).click();
+		await expect(page).toHaveURL(/\/consuntivo$/);
+
+		await expect(page.getByText('Nessuna registrazione in questo periodo.')).toHaveCount(0);
+		await expect(page.getByText('Analisi').first()).toBeVisible();
+
+		const href = await page.getByRole('link', { name: 'Scarica CSV' }).getAttribute('href');
+		expect(href).toMatch(/^\/consuntivo\/csv\?dal=\d{4}-\d{2}-\d{2}&al=\d{4}-\d{2}-\d{2}$/);
+		const response = await page.request.get(href!);
+		expect(response.headers()['content-type']).toContain('text/csv');
+		expect(response.headers()['content-disposition']).toContain(
+			'attachment; filename="consuntivo-'
+		);
+		const body = await response.text();
+		expect(body).toContain('Data;Cliente;Attività;Minuti;Ore');
+		expect(body).toContain(';Rossi;Analisi;10;0,17');
+
+		await page.getByLabel('Al', { exact: true }).fill('2000-01-01');
+		await page.getByRole('button', { name: 'Mostra' }).click();
+		await expect(page.getByRole('alert')).toContainText('non può essere dopo');
+	});
+
+	test('senza sessione il CSV non si scarica', async ({ request }) => {
+		const response = await request.get('/consuntivo/csv', { maxRedirects: 0 });
+		expect(response.status()).toBe(303);
+	});
+});
+
 test.describe('Errori e sessione', () => {
 	test('con un cookie non valido si torna al login spiegando perché', async ({ page, context }) => {
 		await context.addCookies([

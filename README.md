@@ -2,6 +2,14 @@
 
 Dashboard to record work hours to bill to clients
 
+## Consuntivo
+
+La pagina **Consuntivo** mostra le ore di un periodo (default: il mese in corso), con totale per
+cliente e per giorno, e permette di filtrare per cliente. **Scarica CSV** esporta le stesse
+registrazioni per Excel/LibreOffice: separatore `;`, UTF-8 con BOM, colonne
+`Data;Cliente;Attività;Minuti;Ore` (ore decimali con la virgola) e in fondo i totali per cliente.
+Le registrazioni eliminate non sono incluse.
+
 ## Sviluppo
 
 Requisiti: Node >= 22.17.

@@ -309,6 +309,35 @@ export function listEntries(db: Db, day: string): EntryView[] {
 		.all();
 }
 
+/**
+ * Registrazioni non eliminate del periodo (estremi inclusi), opzionalmente di un solo cliente,
+ * in ordine cronologico: giorno, cliente, momento di inserimento.
+ */
+export function listPeriodEntries(
+	db: Db,
+	period: { from: string; to: string; clientId: number | null }
+): EntryView[] {
+	const conditions = [
+		sql`${entries.day} >= ${period.from}`,
+		sql`${entries.day} <= ${period.to}`,
+		isNull(entries.deletedAt)
+	];
+	if (period.clientId !== null) conditions.push(eq(entries.clientId, period.clientId));
+
+	return db
+		.select(entrySelection)
+		.from(entries)
+		.innerJoin(clients, eq(entries.clientId, clients.id))
+		.where(and(...conditions))
+		.orderBy(
+			asc(entries.day),
+			asc(sql`lower(${clients.name})`),
+			asc(entries.createdAt),
+			asc(entries.id)
+		)
+		.all();
+}
+
 /** Registrazioni eliminate del giorno, dalla più recente: servono a recuperarle dopo il toast. */
 export function listDeletedEntries(db: Db, day: string): EntryView[] {
 	return db
