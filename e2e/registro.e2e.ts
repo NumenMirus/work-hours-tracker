@@ -6,7 +6,8 @@ const PASSWORD = 'e2e-password-1';
 const DUPLICATE_TASK = 'Questo cliente ha già una task con questo nome.';
 const DUPLICATE_CLIENT = 'Esiste già un cliente con questo nome.';
 const CLIENT_IN_USE = 'Il cliente ha task o registrazioni: archivialo invece di eliminarlo.';
-const DURATION_ERROR = 'Durata non valida. Esempi: 20, 1:30, 1h30 (max 24 h).';
+const DURATION_ERROR =
+	'Durata non valida. Scrivi i minuti (20) oppure ore e minuti (1:30 o 1h30), al massimo 24 h.';
 
 /** Minuti letti da un'etichetta prodotta da `formatDuration` (`1 h 20 min`). */
 function parseMinutes(label: string): number {
@@ -212,7 +213,7 @@ test.describe.serial('Registro ore', () => {
 
 			await page.getByRole('button', { name: 'Elimina Riunione' }).click();
 			await expect(total(page)).toHaveText('1 h 30 min');
-			await expect(toast(page)).toContainText('Registrazione eliminata');
+			await expect(toast(page)).toContainText('Eliminata: Riunione · 15 min');
 			await expect(entryRow(page, 'Riunione')).toHaveCount(0);
 
 			await toast(page).getByRole('button', { name: 'Ripristina' }).click();
@@ -246,7 +247,7 @@ test.describe.serial('Registro ore', () => {
 			await timer.getByRole('button', { name: 'Registra' }).click();
 
 			await expect(total(page)).toHaveText('1 h 40 min');
-			await expect(toast(page)).toContainText('Analisi 10 min registrata');
+			await expect(toast(page)).toContainText('Analisi +10 min · Rossi');
 			await expect(page.getByRole('link', { name: /^Analisi/ })).toHaveCount(0);
 			await expect(timer.getByRole('button', { name: 'Avvia timer…' })).toBeVisible();
 
@@ -265,7 +266,7 @@ test.describe.serial('Registro ore', () => {
 			await expect(total(page)).toHaveText('0 min');
 			await expect(
 				page.getByText(
-					'Nessuna registrazione per questo giorno. Tocca una task rapida per aggiungere tempo.'
+					'Nessuna registrazione per questo giorno. Scegli una task rapida per aggiungere tempo.'
 				)
 			).toBeVisible();
 
@@ -349,7 +350,7 @@ test.describe.serial('Conferma in due passi', () => {
 
 		await test.step('dopo la chiusura del toast la registrazione si recupera dall’elenco', async () => {
 			const list = page.getByRole('region', { name: 'Registrazioni' });
-			await list.getByText(/^Eliminate \(\d+\)$/).click();
+			await list.getByText(/^Registrazioni eliminate \(\d+\)$/).click();
 			await list
 				.getByRole('button', { name: /^Ripristina / })
 				.first()
