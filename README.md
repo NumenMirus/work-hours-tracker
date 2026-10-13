@@ -50,7 +50,7 @@ sudo registro-ore-update
 Se `/etc/registro-ore/registro-ore.env` non esiste ancora, la password viene
 chieduta due volte durante la prima installazione; per unattended si può passare
 `APP_PASSWORD=...` (min 8 caratteri). `PORT` (default `3000`) vale solo alla
-prima installazione, poi viene letto dall'env file. `VERSION=v0.1.0` installa un
+prima installazione, poi viene letto dall'env file. `REGISTRO_VERSION=v0.1.0` installa un
 tag preciso, `FORCE=1` reinstalla anche la versione già attiva.
 
 Dove stanno le cose:

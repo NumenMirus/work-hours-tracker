@@ -24,7 +24,7 @@
 #   GITHUB_TOKEN  necessaria alla prima installazione (poi salvata in
 #                 /etc/registro-ore/install.env) e agli aggiornamenti se non è
 #                 già salvata lì.
-#   VERSION       tag della release da installare (default: ultima release).
+#   REGISTRO_VERSION  tag della release da installare (default: ultima release).
 #   PORT          porta del servizio (default 3000); considerata solo alla
 #                 prima installazione, poi letta da registro-ore.env.
 #   APP_PASSWORD  password unica di accesso (min 8 caratteri). Se assente alla
@@ -102,8 +102,8 @@ check_system() {
 	if [ ! -f /etc/os-release ]; then
 		die "Sistema operativo non riconosciuto: manca /etc/os-release."
 	fi
-	# In una subshell: os-release definisce anche VERSION ("13 (trixie)"), che altrimenti
-	# sovrascriverebbe la variabile VERSION con cui si sceglie la release da installare.
+	# In una subshell: os-release definisce anche VERSION ("13 (trixie)") e non deve inquinare
+	# l'ambiente dello script.
 	local os_id os_version_id
 	# shellcheck disable=SC1091
 	os_id=$(. /etc/os-release && printf '%s' "${ID:-}")
@@ -291,8 +291,8 @@ install_self() {
 
 resolve_release() {
 	local api
-	if [ -n "${VERSION:-}" ]; then
-		api="https://api.github.com/repos/$REPO/releases/tags/$VERSION"
+	if [ -n "${REGISTRO_VERSION:-}" ]; then
+		api="https://api.github.com/repos/$REPO/releases/tags/$REGISTRO_VERSION"
 	else
 		api="https://api.github.com/repos/$REPO/releases/latest"
 	fi
