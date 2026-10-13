@@ -19,7 +19,13 @@ export const handle: Handle = async ({ event, resolve }) => {
 		return new Response(null, { status: 303, headers: { location: '/' } });
 	}
 
-	return resolve(event);
+	return resolve(event, {
+		// Di default Kit precarica solo JS e CSS: il font si scoprirebbe dopo il parsing del CSS e
+		// il testo comparirebbe prima con il carattere di ripiego. Si precarica solo il sottoinsieme
+		// latino (italiano e punteggiatura), gli altri restano a unicode-range e scaricati se servono.
+		preload: ({ type, path }) =>
+			type === 'js' || type === 'css' || (type === 'font' && path.includes('inter-latin-wght'))
+	});
 };
 
 /**
