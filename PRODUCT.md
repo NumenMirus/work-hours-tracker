@@ -19,7 +19,7 @@ pensare al software: ogni gesto in più è un gesto che prima o poi salta.
 
 Registro ore registra il tempo lavorato per giornata e cliente. L'unità di registrazione è
 la **task rapida**: una durata predefinita (cliente + attività + minuti) che si aggiunge con
-un solo tocco. L'inserimento manualo copre ciò che non è predefinito; il timer esiste, ma è
+un solo tocco. L'inserimento manuale copre ciò che non è predefinito; il timer esiste, ma è
 deliberatamente in secondo piano, perché un timer dimenticato acceso produce un totale falso.
 
 Il successo è un totale giornaliero affidabile, leggibile in un colpo d'occhio e sempre
@@ -36,6 +36,13 @@ Calma, precisa, sobria. Voce italiana diretta, frasi brevi, nessun entusiasmo ar
 Il tool parla poco e dice solo cose vere: se un totale cambia, cambia perché una riga è
 cambiata.
 
+Terminologia, una parola per cosa: **registrazione** (una riga di tempo), **task rapida**
+(la durata predefinita), **giornata** (il giorno che si sta guardando), **timer**. Si
+**elimina** una registrazione e si può **ripristinare**; si **annulla** l'ultima aggiunta;
+si **archivia** un cliente. Mai "cancellare" o "rimuovere" per la stessa cosa. Le
+frasi dicono cosa è successo e cosa fare dopo ("Il timer è già stato fermato: ricarica la
+pagina"), con i numeri nello stesso formato ovunque ("Assistenza +20 min · Rossi").
+
 ## Anti-references
 
 - Dashboard SaaS tipo Toggl o Harvest, piene di grafici, filtri e menu annidati.
@@ -50,7 +57,8 @@ cambiata.
 3. Ogni errore si corregge sul posto, senza modali: nessuna operazione irreversibile che
    non si possa annullare con un altro tocco.
 4. Il timer non si impone mai: nessuna pulsazione, nessun conteggio che ruba l'attenzione,
-   nessun avviso che il timer è acceso da tre ore.
+   nessuna notifica mentre è acceso. Solo alla chiusura, se è rimasto acceso per ore, lo si
+   dice una volta, accanto alla durata da correggere.
 
 ## Accessibility & Inclusion
 
