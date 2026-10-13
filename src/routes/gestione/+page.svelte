@@ -114,6 +114,7 @@
 {/snippet}
 
 <div class="page">
+	<h1 class="visually-hidden">Gestione</h1>
 	<!-- Senza anagrafica le task non hanno a chi appartenere: si parte dai clienti. -->
 	{#if !hasClients}
 		<section aria-labelledby="clients-heading">

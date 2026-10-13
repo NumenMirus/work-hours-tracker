@@ -20,6 +20,7 @@
 </svelte:head>
 
 <div class="page">
+	<h1 class="visually-hidden">Giornata</h1>
 	<DayHeader
 		day={data.day}
 		label={data.label}
