@@ -90,6 +90,8 @@
 				name="activity"
 				type="text"
 				autocomplete="off"
+				autocapitalize="sentences"
+				enterkeyhint="next"
 				list="activity-suggestions"
 				maxlength="120"
 				required
@@ -111,6 +113,7 @@
 			<DurationField
 				id="manual-duration"
 				name="duration"
+				enterkeyhint="send"
 				label="Durata"
 				bind:value={duration}
 				error={fieldError('duration')}
