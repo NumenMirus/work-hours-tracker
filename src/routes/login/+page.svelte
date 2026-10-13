@@ -1,7 +1,9 @@
 <script lang="ts">
+	import { page } from '$app/state';
 	import type { PageProps } from './$types';
 
 	let { form }: PageProps = $props();
+	const expired = $derived(page.url.searchParams.get('sessione') === 'scaduta');
 </script>
 
 <svelte:head>
@@ -12,6 +14,12 @@
 	<form method="POST" class="card">
 		<h1>Registro ore</h1>
 		<p class="hint">Accesso riservato. Inserisci la password per entrare.</p>
+		{#if expired}
+			<p class="notice">
+				La sessione non è più valida: accedi di nuovo. Se stavi registrando qualcosa, l'ultima
+				azione non è stata salvata.
+			</p>
+		{/if}
 
 		<div class="field">
 			<label for="password">Password</label>
@@ -127,5 +135,13 @@
 
 	.btn:active {
 		background: var(--primary-hover);
+	}
+
+	.notice {
+		margin: var(--space-3) 0 0;
+		font-size: var(--text-sm);
+		line-height: var(--text-sm-lh);
+		font-weight: 500;
+		color: var(--ink);
 	}
 </style>

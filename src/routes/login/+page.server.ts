@@ -27,9 +27,22 @@ function pruneAttempts(now: number) {
 	}
 }
 
+/**
+ * Con ADDRESS_HEADER impostato (deploy dietro proxy) `getClientAddress()` lancia se l'header
+ * manca, per esempio con un proxy configurato male: il login non deve diventare un 500, e il
+ * tetto globale resta comunque valido.
+ */
+function addressOf(getClientAddress: () => string): string {
+	try {
+		return getClientAddress();
+	} catch {
+		return 'sconosciuto';
+	}
+}
+
 export const actions: Actions = {
 	default: async ({ request, cookies, getClientAddress }) => {
-		const ip = getClientAddress();
+		const ip = addressOf(getClientAddress);
 		const now = Date.now();
 		if (attempts.size > MAX_TRACKED_IPS) pruneAttempts(now);
 		if (now - globalAttempt.firstAt > WINDOW_MS) globalAttempt = { failures: 0, firstAt: now };
