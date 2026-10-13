@@ -12,6 +12,7 @@ import {
 	getDayTotals,
 	getTimer,
 	listEntries,
+	listDeletedEntries,
 	listQuickTasks,
 	restoreEntry,
 	setClientArchived,
@@ -222,6 +223,24 @@ describe('registrazioni', () => {
 		restoreEntry(db, entry.id);
 		expect(getDayTotals(db, '2026-10-12').totalMinutes).toBe(20);
 		expect(listEntries(db, '2026-10-12')).toHaveLength(1);
+	});
+
+	it('elenca le registrazioni eliminate del giorno e le toglie dall’elenco quando si ripristinano', () => {
+		const { assistenza, turni } = seed();
+		const first = addQuickEntry(db, { taskId: assistenza.id, day: '2026-10-12' });
+		const second = addQuickEntry(db, { taskId: turni.id, day: '2026-10-12' });
+		addQuickEntry(db, { taskId: assistenza.id, day: '2026-10-13' });
+		softDeleteEntry(db, first.id);
+		softDeleteEntry(db, second.id);
+
+		expect(listDeletedEntries(db, '2026-10-12').map((entry) => entry.id)).toEqual([
+			second.id,
+			first.id
+		]);
+		expect(listDeletedEntries(db, '2026-10-13')).toHaveLength(0);
+
+		restoreEntry(db, first.id);
+		expect(listDeletedEntries(db, '2026-10-12').map((entry) => entry.id)).toEqual([second.id]);
 	});
 
 	it('rifiuta durate fuori range', () => {

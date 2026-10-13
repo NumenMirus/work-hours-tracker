@@ -1,5 +1,5 @@
 import { createHash, randomBytes } from 'node:crypto';
-import { and, asc, desc, eq, isNull, ne, sql } from 'drizzle-orm';
+import { and, asc, desc, eq, isNotNull, isNull, ne, sql } from 'drizzle-orm';
 import type { Client, DayTotals, EntryView, QuickTask, TimerState } from '#lib/types.js';
 import { MAX_DURATION_MINUTES } from '#lib/duration.js';
 import { isValidDay } from '#lib/day.js';
@@ -306,6 +306,17 @@ export function listEntries(db: Db, day: string): EntryView[] {
 		.innerJoin(clients, eq(entries.clientId, clients.id))
 		.where(and(eq(entries.day, day), isNull(entries.deletedAt)))
 		.orderBy(desc(entries.createdAt), desc(entries.id))
+		.all();
+}
+
+/** Registrazioni eliminate del giorno, dalla più recente: servono a recuperarle dopo il toast. */
+export function listDeletedEntries(db: Db, day: string): EntryView[] {
+	return db
+		.select(entrySelection)
+		.from(entries)
+		.innerJoin(clients, eq(entries.clientId, clients.id))
+		.where(and(eq(entries.day, day), isNotNull(entries.deletedAt)))
+		.orderBy(desc(entries.deletedAt), desc(entries.id))
 		.all();
 }
 

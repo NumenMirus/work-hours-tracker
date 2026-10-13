@@ -9,6 +9,7 @@ import {
 	getDayTotals,
 	listActivitySuggestions,
 	listClients,
+	listDeletedEntries,
 	listEntries,
 	listQuickTasks,
 	restoreEntry,
@@ -108,6 +109,7 @@ export const load: PageServerLoad = async ({ url }) => {
 		quickGroups: [...groups.values()],
 		clients,
 		entries,
+		deletedEntries: listDeletedEntries(db, day),
 		totals: getDayTotals(db, day),
 		suggestions: listActivitySuggestions(db),
 		defaultClientId: entries[0]?.clientId ?? clients[0]?.id ?? null
