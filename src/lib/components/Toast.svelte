@@ -101,7 +101,9 @@
 	.toast-region {
 		position: fixed;
 		z-index: var(--z-toast);
-		inset: auto var(--space-4) var(--space-4);
+		inset: auto max(var(--space-4), env(safe-area-inset-right))
+			max(var(--space-4), env(safe-area-inset-bottom))
+			max(var(--space-4), env(safe-area-inset-left));
 		display: flex;
 		justify-content: center;
 		pointer-events: none;
@@ -154,7 +156,8 @@
 
 	@media (min-width: 960px) {
 		.toast-region {
-			inset: auto var(--space-5) var(--space-5) auto;
+			inset: auto max(var(--space-5), env(safe-area-inset-right))
+				max(var(--space-5), env(safe-area-inset-bottom)) auto;
 			justify-content: flex-end;
 		}
 

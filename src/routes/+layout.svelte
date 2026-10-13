@@ -40,7 +40,7 @@
 			<form method="POST" action="/logout">
 				<button class="exit" type="submit">
 					<LogOut size={18} strokeWidth={1.75} aria-hidden="true" />
-					Esci
+					<span class="exit-label">Esci</span>
 				</button>
 			</form>
 		</div>
@@ -59,8 +59,15 @@
 		flex-wrap: wrap;
 		align-items: center;
 		gap: var(--space-4);
-		padding: var(--space-4) var(--space-5);
+		padding: var(--space-2) max(var(--space-5), env(safe-area-inset-right)) var(--space-2)
+			max(var(--space-5), env(safe-area-inset-left));
 		border-bottom: 1px solid var(--border);
+	}
+
+	/* Gli incavi dello schermo (notch in orizzontale, barra di sistema) restano fuori dal contenuto. */
+	main {
+		padding-inline: env(safe-area-inset-left) env(safe-area-inset-right);
+		padding-bottom: env(safe-area-inset-bottom);
 	}
 
 	.brand {
@@ -74,7 +81,10 @@
 	}
 
 	nav a {
-		padding: var(--space-1) var(--space-3);
+		display: inline-flex;
+		align-items: center;
+		min-height: var(--control-h);
+		padding: 0 var(--space-3);
 		border-radius: var(--radius-sm);
 		font-size: var(--text-sm);
 		font-weight: 500;
@@ -82,9 +92,16 @@
 		text-decoration: none;
 	}
 
-	nav a:hover {
+	nav a:active {
 		background: var(--surface-2);
 		color: var(--ink);
+	}
+
+	@media (hover: hover) {
+		nav a:hover {
+			background: var(--surface-2);
+			color: var(--ink);
+		}
 	}
 
 	nav a[aria-current='page'] {
@@ -143,15 +160,40 @@
 			color var(--dur-fast) var(--ease-out);
 	}
 
-	.exit:hover {
+	.exit:active {
 		background: var(--surface-2);
 		color: var(--ink);
 	}
 
-	@media (pointer: coarse) {
-		.exit,
-		.pill {
-			min-height: var(--control-h-coarse);
+	@media (hover: hover) {
+		.exit:hover {
+			background: var(--surface-2);
+			color: var(--ink);
+		}
+	}
+
+	/* Telefono in verticale: marchio, sezioni e uscita stanno su una riga sola; "Esci" resta
+	   solo come icona (il testo resta per gli screen reader). */
+	@media (max-width: 559px) {
+		.shell {
+			gap: var(--space-2);
+			padding-inline: max(var(--space-4), env(safe-area-inset-left))
+				max(var(--space-4), env(safe-area-inset-right));
+		}
+
+		.exit {
+			width: var(--control-h);
+			justify-content: center;
+			padding: 0;
+		}
+
+		.exit-label {
+			position: absolute;
+			width: 1px;
+			height: 1px;
+			overflow: hidden;
+			clip-path: inset(50%);
+			white-space: nowrap;
 		}
 	}
 </style>
