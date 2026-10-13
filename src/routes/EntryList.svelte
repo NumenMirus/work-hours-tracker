@@ -23,6 +23,15 @@
 
 	let { day, entries, deletedEntries, clients, totals, form }: Props = $props();
 
+	/**
+	 * Una giornata normale ha qualche decina di righe; con migliaia (un bug o un client
+	 * impazzito) renderle tutte blocca la pagina a ogni tocco. Il totale resta quello vero, calcolato
+	 * dal server su tutte le righe: qui se ne mostrano le più recenti e il resto su richiesta.
+	 */
+	const VISIBLE_LIMIT = 100;
+	let showAll = $state(false);
+	const visibleEntries = $derived(showAll ? entries : entries.slice(0, VISIBLE_LIMIT));
+
 	let editingId = $state<number | null>(null);
 	let editClientId = $state<number | null>(null);
 	let editActivity = $state('');
@@ -96,7 +105,7 @@
 		</div>
 	{:else}
 		<ul class="list">
-			{#each entries as entry (entry.id)}
+			{#each visibleEntries as entry (entry.id)}
 				<li
 					class="row"
 					in:fly={inTransition()}
@@ -208,6 +217,13 @@
 				</li>
 			{/each}
 		</ul>
+		{#if entries.length > visibleEntries.length}
+			<div class="more">
+				<Button type="button" variant="secondary" onclick={() => (showAll = true)}>
+					Mostra le altre {entries.length - visibleEntries.length} registrazioni
+				</Button>
+			</div>
+		{/if}
 	{/if}
 
 	<!-- Il toast chiude da solo: qui le eliminate restano recuperabili, anche solo da tastiera. -->
@@ -498,5 +514,9 @@
 		color: var(--muted);
 		text-decoration: line-through;
 		overflow-wrap: anywhere;
+	}
+
+	.more {
+		margin-top: var(--space-3);
 	}
 </style>
