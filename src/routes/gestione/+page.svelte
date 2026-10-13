@@ -322,12 +322,6 @@
 		border-color: var(--primary);
 	}
 
-	@media (pointer: coarse) {
-		select {
-			min-height: var(--control-h-coarse);
-		}
-	}
-
 	.group {
 		margin-bottom: var(--space-5);
 	}

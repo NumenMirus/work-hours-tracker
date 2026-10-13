@@ -94,12 +94,6 @@
 		border-radius: var(--radius-sm);
 	}
 
-	@media (pointer: coarse) {
-		input {
-			height: var(--control-h-coarse);
-		}
-	}
-
 	input:hover {
 		border-color: var(--ink);
 	}
@@ -125,14 +119,10 @@
 		transition: background-color var(--dur-fast) var(--ease-out);
 	}
 
-	@media (pointer: coarse) {
-		.btn {
-			height: var(--control-h-coarse);
+	@media (hover: hover) {
+		.btn:hover {
+			background: var(--primary-hover);
 		}
-	}
-
-	.btn:hover {
-		background: var(--primary-hover);
 	}
 
 	.btn:active {

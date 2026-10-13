@@ -75,12 +75,6 @@
 		border-color: var(--danger);
 	}
 
-	@media (pointer: coarse) {
-		input {
-			min-height: var(--control-h-coarse);
-		}
-	}
-
 	.error {
 		font-size: var(--text-sm);
 		color: var(--danger);

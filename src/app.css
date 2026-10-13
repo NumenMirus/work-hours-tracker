@@ -62,9 +62,9 @@
 	--radius-md: 10px;
 	--radius-full: 999px;
 
-	/* Dimensioni dei controlli */
+	/* Dimensione dei controlli: con un puntatore grossolano (touch) sale a 44px in un punto solo,
+	   tutti i componenti la leggono da qui. */
 	--control-h: 40px;
-	--control-h-coarse: 44px;
 
 	/* Elevazione: piatta, l'unica ombra è quella del toast */
 	--shadow-toast: 0 4px 8px oklch(0 0 0 / 0.18);
@@ -97,6 +97,12 @@
 		--live-text: oklch(0.82 0.13 75);
 		--danger: oklch(0.7 0.15 25);
 		--danger-soft: oklch(0.3 0.06 25);
+	}
+}
+
+@media (pointer: coarse) {
+	:root {
+		--control-h: 44px;
 	}
 }
 

@@ -45,12 +45,6 @@
 			transform var(--dur-fast) var(--ease-out);
 	}
 
-	@media (pointer: coarse) {
-		.btn {
-			min-height: var(--control-h-coarse);
-		}
-	}
-
 	.btn:active:not(:disabled) {
 		transform: translateY(1px);
 	}
@@ -72,9 +66,18 @@
 		border-color: var(--primary);
 	}
 
-	.primary:hover:not(:disabled) {
+	/* Su touch :hover resta attaccato dopo il tocco: l'hover vale solo dove esiste, il feedback
+	   di pressione (:active) vale ovunque. */
+	.primary:active:not(:disabled) {
 		background: var(--primary-hover);
 		border-color: var(--primary-hover);
+	}
+
+	@media (hover: hover) {
+		.primary:hover:not(:disabled) {
+			background: var(--primary-hover);
+			border-color: var(--primary-hover);
+		}
 	}
 
 	.secondary {
@@ -83,8 +86,14 @@
 		border-color: var(--border-strong);
 	}
 
-	.secondary:hover:not(:disabled) {
+	.secondary:active:not(:disabled) {
 		background: var(--surface-2);
+	}
+
+	@media (hover: hover) {
+		.secondary:hover:not(:disabled) {
+			background: var(--surface-2);
+		}
 	}
 
 	.ghost {
@@ -92,9 +101,16 @@
 		color: var(--muted);
 	}
 
-	.ghost:hover:not(:disabled) {
+	.ghost:active:not(:disabled) {
 		background: var(--surface-2);
 		color: var(--ink);
+	}
+
+	@media (hover: hover) {
+		.ghost:hover:not(:disabled) {
+			background: var(--surface-2);
+			color: var(--ink);
+		}
 	}
 
 	.danger {
@@ -105,8 +121,15 @@
 
 	/* Il mix con `--ink` scurisce in tema chiaro e illumina in tema scuro: l'hover va
 	   sempre nella direzione della luce, senza perdere il contrasto con `--primary-ink`. */
-	.danger:hover:not(:disabled) {
+	.danger:active:not(:disabled) {
 		background: color-mix(in oklch, var(--danger) 85%, var(--ink));
 		border-color: color-mix(in oklch, var(--danger) 85%, var(--ink));
+	}
+
+	@media (hover: hover) {
+		.danger:hover:not(:disabled) {
+			background: color-mix(in oklch, var(--danger) 85%, var(--ink));
+			border-color: color-mix(in oklch, var(--danger) 85%, var(--ink));
+		}
 	}
 </style>
