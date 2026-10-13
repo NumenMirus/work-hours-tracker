@@ -102,13 +102,18 @@ check_system() {
 	if [ ! -f /etc/os-release ]; then
 		die "Sistema operativo non riconosciuto: manca /etc/os-release."
 	fi
+	# In una subshell: os-release definisce anche VERSION ("13 (trixie)"), che altrimenti
+	# sovrascriverebbe la variabile VERSION con cui si sceglie la release da installare.
+	local os_id os_version_id
 	# shellcheck disable=SC1091
-	. /etc/os-release
-	if [ "${ID:-}" != "debian" ]; then
-		die "Installazione supportata solo su Debian (trovato ${ID:-sconosciuto})."
+	os_id=$(. /etc/os-release && printf '%s' "${ID:-}")
+	# shellcheck disable=SC1091
+	os_version_id=$(. /etc/os-release && printf '%s' "${VERSION_ID:-}")
+	if [ "$os_id" != "debian" ]; then
+		die "Installazione supportata solo su Debian (trovato ${os_id:-sconosciuto})."
 	fi
-	if [ "${VERSION_ID:-}" != "13" ]; then
-		warn "Versione Debian ${VERSION_ID:-sconosciuta} invece di 13: procedo, ma il supporto è verificato solo su Debian 13."
+	if [ "$os_version_id" != "13" ]; then
+		warn "Versione Debian ${os_version_id:-sconosciuta} invece di 13: procedo, ma il supporto è verificato solo su Debian 13."
 	fi
 }
 
