@@ -90,15 +90,21 @@
 		min-width: 0;
 	}
 
+	@media (min-width: 768px) {
+		.grid {
+			grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+			gap: var(--space-6);
+			align-items: start;
+		}
+	}
+
 	@media (min-width: 960px) {
 		.page {
 			padding: var(--space-5) var(--space-5) var(--space-8);
 		}
 
 		.grid {
-			grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
 			gap: var(--space-7);
-			align-items: start;
 		}
 	}
 </style>
