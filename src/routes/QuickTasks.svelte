@@ -67,7 +67,7 @@
 							<button type="submit" class:added={addedTaskId === task.id}>
 								<span class="name">{task.name}</span>
 								{#if addedTaskId === task.id}
-									<span class="added">
+									<span class="flash">
 										<Check size={14} stroke-width={2} aria-hidden="true" />
 										Aggiunto
 									</span>
@@ -129,13 +129,33 @@
 			border-color var(--dur-fast) var(--ease-out);
 	}
 
-	button:hover {
-		background: var(--surface-2);
+	button:active {
+		background: var(--primary-soft);
+		border-color: var(--primary);
+	}
+
+	@media (hover: hover) {
+		button:hover {
+			background: var(--surface-2);
+		}
 	}
 
 	button.added {
 		background: var(--primary-soft);
 		border-color: var(--primary);
+	}
+
+	/* Telefono: due task per riga a tutta larghezza, bersagli ampi e allineati per il pollice. */
+	@media (max-width: 559px) {
+		.tasks form {
+			flex: 1 1 calc(50% - var(--space-2));
+			min-width: 0;
+		}
+
+		button {
+			width: 100%;
+			min-width: 0;
+		}
 	}
 
 	.name {
@@ -151,7 +171,7 @@
 		color: var(--primary);
 	}
 
-	.added {
+	.flash {
 		display: inline-flex;
 		align-items: center;
 		gap: var(--space-1);
