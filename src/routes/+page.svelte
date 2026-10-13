@@ -61,6 +61,7 @@
 			<EntryList
 				day={data.day}
 				entries={data.entries}
+				deletedEntries={data.deletedEntries}
 				clients={data.clients}
 				totals={data.totals}
 				{form}

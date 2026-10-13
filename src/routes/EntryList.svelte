@@ -14,12 +14,14 @@
 	interface Props {
 		day: string;
 		entries: EntryView[];
+		/** Registrazioni eliminate del giorno, recuperabili dopo la chiusura del toast. */
+		deletedEntries: EntryView[];
 		clients: Client[];
 		totals: DayTotals;
 		form: { action?: string; error?: string; field?: string; id?: number } | null;
 	}
 
-	let { day, entries, clients, totals, form }: Props = $props();
+	let { day, entries, deletedEntries, clients, totals, form }: Props = $props();
 
 	let editingId = $state<number | null>(null);
 	let editClientId = $state<number | null>(null);
@@ -191,7 +193,11 @@
 							>
 								<Pencil size={18} stroke-width={1.75} aria-hidden="true" />
 							</button>
-							<form method="POST" action={`?d=${day}&/deleteEntry`} use:enhance={withToast()}>
+							<form
+								method="POST"
+								action={`?d=${day}&/deleteEntry`}
+								use:enhance={withToast({ focus: 'next' })}
+							>
 								<input type="hidden" name="id" value={entry.id} />
 								<button type="submit" class="icon" aria-label="Elimina {entry.activity}">
 									<Trash2 size={18} stroke-width={1.75} aria-hidden="true" />
@@ -202,6 +208,33 @@
 				</li>
 			{/each}
 		</ul>
+	{/if}
+
+	<!-- Il toast chiude da solo: qui le eliminate restano recuperabili, anche solo da tastiera. -->
+	{#if deletedEntries.length > 0}
+		<details class="deleted">
+			<summary>Eliminate ({deletedEntries.length})</summary>
+			<ul class="deleted-list">
+				{#each deletedEntries as entry (entry.id)}
+					<li>
+						<span class="deleted-info">
+							<span class="deleted-activity">{entry.activity}</span>
+							<span class="meta">{entry.clientName} · {formatDuration(entry.durationMinutes)}</span>
+						</span>
+						<form
+							method="POST"
+							action={`?d=${day}&/restoreEntry`}
+							use:enhance={withToast({ focus: 'next' })}
+						>
+							<input type="hidden" name="id" value={entry.id} />
+							<Button type="submit" variant="ghost" aria-label="Ripristina {entry.activity}">
+								Ripristina
+							</Button>
+						</form>
+					</li>
+				{/each}
+			</ul>
+		</details>
 	{/if}
 </section>
 
@@ -218,6 +251,7 @@
 		margin-top: var(--space-1);
 		font-size: var(--text-sm);
 		color: var(--muted);
+		overflow-wrap: anywhere;
 	}
 
 	.status {
@@ -262,6 +296,7 @@
 	.meta {
 		font-size: var(--text-sm);
 		color: var(--muted);
+		overflow-wrap: anywhere;
 	}
 
 	.amount {
@@ -398,10 +433,66 @@
 		font-size: var(--text-sm);
 	}
 
+	.deleted {
+		margin-top: var(--space-4);
+		font-size: var(--text-sm);
+	}
+
+	.deleted summary {
+		display: inline-flex;
+		align-items: center;
+		min-height: var(--control-h);
+		padding: 0 var(--space-2);
+		border-radius: var(--radius-sm);
+		color: var(--muted);
+		cursor: pointer;
+	}
+
+	.deleted summary:hover {
+		background: var(--surface-2);
+		color: var(--ink);
+	}
+
+	.deleted-list {
+		list-style: none;
+		padding: 0;
+		margin-top: var(--space-1);
+		border: 1px solid var(--border);
+		border-radius: var(--radius-md);
+	}
+
+	.deleted-list li {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-3);
+		padding: var(--space-2) var(--space-3);
+	}
+
+	.deleted-list li + li {
+		border-top: 1px solid var(--border);
+	}
+
+	.deleted-info {
+		display: flex;
+		flex-direction: column;
+		min-width: 0;
+	}
+
+	.deleted-activity {
+		color: var(--muted);
+		text-decoration: line-through;
+		overflow-wrap: anywhere;
+	}
+
 	@media (pointer: coarse) {
 		.icon {
 			width: var(--control-h-coarse);
 			height: var(--control-h-coarse);
+		}
+
+		.deleted summary {
+			min-height: var(--control-h-coarse);
 		}
 	}
 </style>
