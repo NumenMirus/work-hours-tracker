@@ -17,11 +17,14 @@ export interface ToastData {
 	action?: ToastAction;
 }
 
+/** Un messaggio semplice si legge in 6 s; con un'azione (Annulla/Ripristina) serve più tempo per raggiungerla. */
 export const TOAST_DURATION = 6000;
+export const TOAST_ACTION_DURATION = 12000;
 
 export const toastState = $state<{ current: ToastData | null }>({ current: null });
 
 let timer: ReturnType<typeof setTimeout> | null = null;
+let total = TOAST_DURATION;
 let remaining = TOAST_DURATION;
 let startedAt = 0;
 
@@ -34,7 +37,8 @@ function clearTimer() {
 
 export function showToast(data: ToastData): void {
 	clearTimer();
-	remaining = TOAST_DURATION;
+	total = data.action ? TOAST_ACTION_DURATION : TOAST_DURATION;
+	remaining = total;
 	toastState.current = data;
 	schedule();
 }
@@ -48,7 +52,7 @@ export function dismissToast(): void {
 export function pauseToastTimer(): void {
 	if (timer === null) return;
 	clearTimer();
-	remaining = Math.max(0, TOAST_DURATION - (Date.now() - startedAt));
+	remaining = Math.max(0, total - (Date.now() - startedAt));
 }
 
 /** Riprende la chiusura automatica con il tempo residuo. */

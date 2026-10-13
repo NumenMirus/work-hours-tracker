@@ -10,7 +10,39 @@
 	} from '#lib/toast.svelte.js';
 
 	const duration = () => (prefersReducedMotion.current ? 0 : 200);
+
+	let actionForm = $state<HTMLFormElement | null>(null);
+	// La scorciatoia dipende dalla piattaforma. Il toast esiste solo dopo un'azione dell'utente,
+	// cioè nel browser: non c'è rischio di discordanza con l'HTML renderizzato dal server.
+	const shortcutHint = $derived(
+		typeof navigator === 'undefined'
+			? ''
+			: /Mac|iPhone|iPad/.test(navigator.platform)
+				? '⌘Z'
+				: 'Ctrl+Z'
+	);
+
+	function isEditable(target: EventTarget | null): boolean {
+		return (
+			target instanceof HTMLElement &&
+			(target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName))
+		);
+	}
+
+	/**
+	 * Ctrl/⌘+Z esegue l'azione del toast (Annulla/Ripristina) senza dover raggiungere il pulsante:
+	 * da tastiera il toast è l'ultimo elemento della pagina e sparisce dopo pochi secondi.
+	 * Dentro un campo di testo resta l'annullamento nativo del browser.
+	 */
+	function onWindowKeydown(event: KeyboardEvent) {
+		if (!actionForm || event.shiftKey || event.altKey || event.key.toLowerCase() !== 'z') return;
+		if (!(event.ctrlKey || event.metaKey) || isEditable(event.target)) return;
+		event.preventDefault();
+		actionForm.requestSubmit();
+	}
 </script>
+
+<svelte:window onkeydown={onWindowKeydown} />
 
 <!-- Contenitore sempre montato: `role="status"` annuncia il cambio di testo senza toccare il focus. -->
 <div class="toast-region" role="status" aria-live="polite">
@@ -34,17 +66,31 @@
 			<span class="message">{toast.message}</span>
 			{#if toast.action}
 				<form
+					bind:this={actionForm}
 					method="POST"
 					action={toast.action.formAction}
 					class="action"
-					use:enhance={() =>
-						async ({ update }) => {
+					use:enhance={() => {
+						// Il focus era altrove (pagina o scorciatoia): dopo l'azione ci si torna.
+						const previous = document.activeElement;
+						return async ({ update }) => {
 							dismissToast();
 							await update();
-						}}
+							if (
+								previous instanceof HTMLElement &&
+								previous.isConnected &&
+								previous !== document.body
+							) {
+								previous.focus({ preventScroll: true });
+							}
+						};
+					}}
 				>
 					<input type="hidden" name="id" value={toast.action.entryId} />
-					<button type="submit">{toast.action.label}</button>
+					<button type="submit" aria-keyshortcuts="Control+Z Meta+Z">
+						{toast.action.label}
+						{#if shortcutHint}<span class="hint" aria-hidden="true">{shortcutHint}</span>{/if}
+					</button>
 				</form>
 			{/if}
 		</div>
@@ -89,6 +135,21 @@
 		text-decoration: underline;
 		text-underline-offset: 2px;
 		min-height: var(--control-h);
+	}
+
+	/* Promemoria della scorciatoia: inline-block per non ereditare la sottolineatura del bottone. */
+	.hint {
+		display: inline-block;
+		margin-left: var(--space-2);
+		font-weight: 400;
+		font-size: var(--text-xs);
+		text-decoration: none;
+	}
+
+	@media (hover: none) {
+		.hint {
+			display: none;
+		}
 	}
 
 	@media (min-width: 960px) {
