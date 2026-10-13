@@ -62,11 +62,16 @@ describe('parseDuration', () => {
 
 describe('formatDuration', () => {
 	it('formatta le durate in italiano', () => {
-		expect(formatDuration(0)).toBe('0 min');
-		expect(formatDuration(20)).toBe('20 min');
-		expect(formatDuration(60)).toBe('1 h');
-		expect(formatDuration(80)).toBe('1 h 20 min');
-		expect(formatDuration(1440)).toBe('24 h');
+		expect(formatDuration(0)).toBe('0\u00a0min');
+		expect(formatDuration(20)).toBe('20\u00a0min');
+		expect(formatDuration(60)).toBe('1\u00a0h');
+		expect(formatDuration(80)).toBe('1\u00a0h 20\u00a0min');
+		expect(formatDuration(1440)).toBe('24\u00a0h');
+	});
+
+	it('lega ogni numero alla sua unità: si può andare a capo solo fra le due quantità', () => {
+		const text = formatDuration(80);
+		expect(text.split(' ')).toEqual(['1\u00a0h', '20\u00a0min']);
 	});
 });
 

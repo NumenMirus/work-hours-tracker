@@ -36,15 +36,19 @@ export function parseDuration(input: string): number | null {
 	return minutes;
 }
 
-/** `90` → `1 h 30 min`. */
+/**
+ * `90` → `1 h 30 min`. Il numero e la sua unità sono legati da uno spazio non separabile
+ * (U+00A0): "1 h" e "30 min" non si spezzano mai a capo, il testo può andare a capo solo fra
+ * le due quantità.
+ */
 export function formatDuration(minutes: number): string {
 	const total = Math.max(0, Math.round(minutes));
-	if (total === 0) return '0 min';
+	if (total === 0) return '0\u00a0min';
 	const h = Math.floor(total / 60);
 	const m = total % 60;
-	if (h === 0) return `${m} min`;
-	if (m === 0) return `${h} h`;
-	return `${h} h ${m} min`;
+	if (h === 0) return `${m}\u00a0min`;
+	if (m === 0) return `${h}\u00a0h`;
+	return `${h}\u00a0h ${m}\u00a0min`;
 }
 
 /** Valore da usare per precompilare un campo durata: `90` → `1:30`, `20` → `20`. */
