@@ -293,10 +293,18 @@ resolve_release() {
 	fi
 	TMP=$(mktemp -d)
 
-	if ! curl -fsSL -H "Authorization: Bearer $GITHUB_TOKEN" \
-		-H "Accept: application/vnd.github+json" "$api" -o "$TMP/release.json" 2>/dev/null; then
-		die "Token non valido o release inesistente."
-	fi
+	local status
+	status=$(curl -sSL -o "$TMP/release.json" -w '%{http_code}' \
+		-H "Authorization: Bearer $GITHUB_TOKEN" \
+		-H "Accept: application/vnd.github+json" "$api" 2>"$TMP/curl.err") || status=000
+	case "$status" in
+	200) ;;
+	000) die "Impossibile raggiungere api.github.com: $(cat "$TMP/curl.err")" ;;
+	401) die "GitHub risponde 401: token scaduto, revocato o copiato male." ;;
+	403) die "GitHub risponde 403: token senza permessi o limite di richieste raggiunto." ;;
+	404) die "GitHub risponde 404: release inesistente oppure il token non vede il repo (serve 'Contents: Read-only' sul repo $REPO, scelto fra i repository del token)." ;;
+	*) die "GitHub risponde HTTP $status." ;;
+	esac
 	TAG=$(jq -r '.tag_name // empty' "$TMP/release.json")
 	[ -n "$TAG" ] || die "Risposta inattesa dall'API GitHub: tag mancante."
 	TARBALL_ID=$(jq -r '. as $r | ($r.assets[] | select(.name == ("registro-ore-" + $r.tag_name + ".tar.gz")) | .id)' "$TMP/release.json")
