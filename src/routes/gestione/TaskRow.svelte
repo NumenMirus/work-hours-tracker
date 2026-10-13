@@ -4,6 +4,7 @@
 	import Button from '#lib/components/Button.svelte';
 	import ConfirmButton from '#lib/components/ConfirmButton.svelte';
 	import DurationField from '#lib/components/DurationField.svelte';
+	import { withToast } from '#lib/enhance.js';
 	import { formatDuration, formatDurationInput } from '#lib/duration.js';
 	import type { QuickTask } from '#lib/types.js';
 	import TextField from './TextField.svelte';
@@ -93,6 +94,8 @@
 				formAction="?/deleteTask"
 				id={task.id}
 				ariaLabel="Elimina {task.name}"
+				confirmAriaLabel="Conferma eliminazione di {task.name}"
+				onenhance={withToast({ focus: 'next', reset: false })}
 			/>
 		</div>
 	{/if}
@@ -126,6 +129,7 @@
 
 	.name {
 		font-weight: 500;
+		overflow-wrap: anywhere;
 	}
 
 	.duration {

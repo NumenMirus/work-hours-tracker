@@ -3,6 +3,7 @@
 	import type { SubmitFunction } from '$app/forms';
 	import Button from '#lib/components/Button.svelte';
 	import ConfirmButton from '#lib/components/ConfirmButton.svelte';
+	import { withToast } from '#lib/enhance.js';
 	import type { ClientWithUsage } from '#lib/server/repo.js';
 	import TextField from './TextField.svelte';
 
@@ -89,6 +90,8 @@
 				formAction="?/deleteClient"
 				id={client.id}
 				ariaLabel="Elimina {client.name}"
+				confirmAriaLabel="Conferma eliminazione di {client.name}"
+				onenhance={withToast({ focus: 'next', reset: false })}
 			/>
 		</div>
 	{/if}
@@ -122,6 +125,7 @@
 
 	.name {
 		font-weight: 500;
+		overflow-wrap: anywhere;
 	}
 
 	.archived .name {

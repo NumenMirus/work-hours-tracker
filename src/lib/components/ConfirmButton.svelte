@@ -3,7 +3,7 @@
 	import Button from './Button.svelte';
 
 	/** Tempo prima che lo stato "Conferma" torni a quello iniziale. */
-	const CONFIRM_WINDOW_MS = 4000;
+	const CONFIRM_WINDOW_MS = 6000;
 	interface Props {
 		/** Etichetta del primo passo. */
 		label: string;
@@ -14,7 +14,10 @@
 		/** Valore del campo nascosto `id`. */
 		id: number;
 		variant?: 'danger' | 'ghost';
+		/** Nome accessibile del primo passo (default: l'etichetta visibile). */
 		ariaLabel?: string;
+		/** Nome accessibile del secondo passo: deve contenere `confirmLabel` (WCAG 2.5.3). */
+		confirmAriaLabel?: string;
 		/** `use:enhance` da applicare al form, tipicamente `withToast()`. */
 		onenhance?: SubmitFunction;
 	}
@@ -26,6 +29,7 @@
 		id,
 		variant = 'ghost',
 		ariaLabel = undefined,
+		confirmAriaLabel = undefined,
 		onenhance
 	}: Props = $props();
 
@@ -52,7 +56,8 @@
 	<Button
 		type="button"
 		variant={confirming ? 'danger' : variant}
-		aria-label={ariaLabel}
+		aria-label={confirming ? (confirmAriaLabel ?? confirmLabel) : ariaLabel}
+		onblur={() => (confirming = false)}
 		onclick={(event) => {
 			if (!confirming) {
 				confirming = true;
@@ -65,6 +70,10 @@
 	>
 		{confirming ? confirmLabel : label}
 	</Button>
+	<!-- Il cambio di etichetta del bottone non viene annunciato da solo: lo si dice a parte. -->
+	<span class="visually-hidden" role="status">
+		{confirming ? `Premi di nuovo «${confirmLabel}» per procedere.` : ''}
+	</span>
 </form>
 
 <style>

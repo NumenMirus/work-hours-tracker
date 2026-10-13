@@ -128,6 +128,7 @@
 					<Button type="button" variant="primary" onclick={revealStop}>Ferma</Button>
 					<ConfirmButton
 						label="Scarta"
+						confirmAriaLabel="Conferma: scarta il timer senza registrare"
 						formAction={`?d=${day}&/discardTimer`}
 						id={1}
 						onenhance={withToast()}

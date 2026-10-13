@@ -60,6 +60,12 @@
 		cursor: not-allowed;
 	}
 
+	/* In attesa di risposta ma ancora focalizzabile: l'invio è già stato scartato lato script. */
+	.btn[aria-disabled='true'] {
+		opacity: 0.7;
+		cursor: progress;
+	}
+
 	.primary {
 		background: var(--primary);
 		color: var(--primary-ink);
