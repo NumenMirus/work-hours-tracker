@@ -32,8 +32,6 @@
 
 	/* Tipografia */
 	--font: 'Inter Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
-	--text-xs: 0.8125rem;
-	--text-xs-lh: 1.4;
 	--text-sm: 0.875rem;
 	--text-sm-lh: 1.45;
 	--text-base: 1rem;
@@ -97,6 +95,15 @@
 		--live-text: oklch(0.82 0.13 75);
 		--danger: oklch(0.7 0.15 25);
 		--danger-soft: oklch(0.3 0.06 25);
+		/* Testo chiaro su fondo scuro: a parità di valori sembra più sottile e più stretto, quindi
+		   il corpo prende un po' più di interlinea (+0.05) e di tracking (sotto, su body). */
+		--text-base-lh: 1.55;
+		--text-sm-lh: 1.5;
+	}
+
+	body {
+		letter-spacing: 0.01em;
+		-webkit-font-smoothing: antialiased;
 	}
 }
 
@@ -128,7 +135,6 @@ body {
 	line-height: var(--text-base-lh);
 	color: var(--ink);
 	background: var(--bg);
-	-webkit-font-smoothing: antialiased;
 	text-rendering: optimizeLegibility;
 }
 

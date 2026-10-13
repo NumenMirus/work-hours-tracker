@@ -144,7 +144,7 @@
 		display: inline-block;
 		margin-left: var(--space-2);
 		font-weight: 400;
-		font-size: var(--text-xs);
+		font-size: var(--text-sm);
 		text-decoration: none;
 	}
 

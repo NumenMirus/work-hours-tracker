@@ -33,7 +33,6 @@
 
 <style>
 	.clock {
-		font-variant-numeric: tabular-nums;
 		font-weight: 600;
 		color: var(--live-text);
 	}

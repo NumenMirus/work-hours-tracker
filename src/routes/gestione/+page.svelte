@@ -356,6 +356,8 @@
 	.hint,
 	.empty {
 		font-size: var(--text-sm);
+		/* Testo corrente: misura di lettura 45–75 caratteri, non tutta la larghezza della pagina. */
+		max-width: 68ch;
 		color: var(--muted);
 	}
 

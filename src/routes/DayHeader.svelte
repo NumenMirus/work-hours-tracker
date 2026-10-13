@@ -211,21 +211,20 @@
 		font-weight: 600;
 	}
 
-	@media (max-width: 959px) {
-		.value {
-			font-size: var(--text-2xl);
-			line-height: var(--text-2xl-lh);
-		}
-	}
-
-	/* Telefono in verticale: la navigazione occupa la prima riga e il totale una riga propria a
-	   tutta larghezza (etichetta a sinistra, valore a destra), che si legge con un'occhiata. */
+	/* Il totale è il numero che conta: resta a 2.25rem fino ai tablet e scende solo sui telefoni,
+	   dove la navigazione occupa la prima riga e il totale una riga propria a tutta larghezza
+	   (etichetta a sinistra, valore a destra), che si legge con un'occhiata. */
 	@media (max-width: 559px) {
 		.total {
 			flex-direction: row;
 			align-items: baseline;
 			justify-content: space-between;
 			flex: 1 1 100%;
+		}
+
+		.value {
+			font-size: var(--text-2xl);
+			line-height: var(--text-2xl-lh);
 		}
 	}
 </style>

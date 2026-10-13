@@ -177,10 +177,12 @@ headline che si comprime da sola aggiunge solo incertezza.
 
 ### Hierarchy
 
-- **Totale** (600, 2.25rem, 1.1, `-0.02em`): il totale del giorno, nell'header della giornata. `--text-2xl` (1.75rem) sotto i 960 px. Sempre `.num`.
+- **Totale** (600, 2.25rem, 1.1, `-0.02em`): il totale del giorno, nell'header della giornata. `--text-2xl` (1.75rem) solo sotto i 560 px (telefono), dove occupa una riga propria. Sempre `.num`.
 - **Titolo** (600, 1.125rem, 1.4): nomi delle sezioni ("Task rapide", "Registrazioni", "Timer") e titoli di gruppo. Mai maiuscoletto, mai con tracking.
 - **Corpo** (400, 1rem, 1.5): attività delle registrazioni, testo corrente.
-- **Etichetta** (500, 0.8125rem–0.875rem): nomi dei pulsanti, didascalie, unità delle durate. Le durate nei pulsanti delle task rapide sono 600 e `--primary`.
+- **Etichetta** (500, 0.875rem): nomi dei pulsanti, didascalie, unità delle durate, tag. Le durate nei pulsanti delle task rapide sono 600 e `--primary`. La scala ha un solo gradino sotto il corpo: 0.8125rem e 0.875rem erano troppo vicini per distinguersi.
+- **Tema scuro**: testo chiaro su fondo scuro sembra più sottile e più stretto, quindi sotto `prefers-color-scheme: dark` il corpo prende interlinea 1.55 (etichette 1.5) e `letter-spacing: 0.01em`.
+- **Numeri con unità**: `formatDuration` lega numero e unità con uno spazio non separabile (`1 h 20 min` va a capo solo fra le due quantità).
 
 ### Named Rules
 

@@ -224,7 +224,7 @@
 	}
 
 	.state {
-		font-size: var(--text-xs);
+		font-size: var(--text-sm);
 		font-weight: 600;
 		color: var(--live-text);
 	}
