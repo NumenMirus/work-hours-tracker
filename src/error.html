@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="it">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="color-scheme" content="light dark" />
+		<meta name="robots" content="noindex" />
+		<title>Errore %sveltekit.status% · Registro ore</title>
+		<!-- Pagina di ripiego: compare quando l'errore impedisce di montare l'app (CSS e layout non
+		     disponibili), quindi gli stili sono qui dentro e non usano i token. -->
+		<style>
+			body {
+				font-family:
+					system-ui,
+					-apple-system,
+					'Segoe UI',
+					sans-serif;
+				max-width: 46ch;
+				margin: 4rem auto;
+				padding: 0 1rem;
+				line-height: 1.5;
+				color: oklch(0.24 0.025 230);
+				background: oklch(1 0 0);
+			}
+			p.code {
+				font-size: 0.875rem;
+				margin: 0;
+				color: oklch(0.47 0.02 230);
+			}
+			h1 {
+				font-size: 1.375rem;
+				margin: 0.25rem 0 0.75rem;
+			}
+			a {
+				color: oklch(0.44 0.085 222);
+			}
+			@media (prefers-color-scheme: dark) {
+				body {
+					color: oklch(0.94 0.008 225);
+					background: oklch(0.17 0.01 230);
+				}
+				p.code {
+					color: oklch(0.72 0.015 225);
+				}
+				a {
+					color: oklch(0.74 0.085 215);
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<p class="code">Errore %sveltekit.status%</p>
+		<h1>Qualcosa non ha funzionato</h1>
+		<p>
+			L'app non è riuscita a rispondere. Riprova tra qualche istante; se continua, guarda i log del
+			servizio (journalctl -u registro-ore).
+		</p>
+		<p><a href="/">Torna alla giornata</a></p>
+	</body>
+</html>
