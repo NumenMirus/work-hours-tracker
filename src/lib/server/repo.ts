@@ -330,7 +330,7 @@ export function addQuickEntry(db: Db, input: { taskId: number; day: string }): E
 	if (client.archivedAt !== null) {
 		throw new DomainError(
 			'archived',
-			'Il cliente è archiviato: ripristinalo per registrare il tempo.'
+			'Il cliente è archiviato: ripristinalo in Gestione per registrare il tempo.'
 		);
 	}
 
@@ -363,7 +363,7 @@ export function addManualEntry(
 	if (client.archivedAt !== null) {
 		throw new DomainError(
 			'archived',
-			'Il cliente è archiviato: ripristinalo per registrare il tempo.'
+			'Il cliente è archiviato: ripristinalo in Gestione per registrare il tempo.'
 		);
 	}
 
@@ -392,7 +392,7 @@ export function updateEntry(
 
 	const current = db.select().from(entries).where(eq(entries.id, id)).get();
 	if (!current || current.deletedAt !== null) {
-		throw new DomainError('not_found', 'Registrazione non trovata.');
+		throw new DomainError('not_found', 'Registrazione non trovata: forse è già stata eliminata.');
 	}
 
 	const client = db.select().from(clients).where(eq(clients.id, input.clientId)).get();
@@ -402,7 +402,7 @@ export function updateEntry(
 	if (client.archivedAt !== null && input.clientId !== current.clientId) {
 		throw new DomainError(
 			'archived',
-			'Il cliente è archiviato: ripristinalo per spostare la registrazione su di lui.'
+			'Il cliente è archiviato: ripristinalo in Gestione per spostare la registrazione.'
 		);
 	}
 
@@ -427,7 +427,7 @@ export function softDeleteEntry(db: Db, id: number): EntryView {
 		.where(eq(entries.id, id))
 		.get();
 	if (!current || current.deletedAt !== null) {
-		throw new DomainError('not_found', 'Registrazione non trovata.');
+		throw new DomainError('not_found', 'Registrazione non trovata: forse è già stata eliminata.');
 	}
 
 	db.update(entries)
@@ -445,7 +445,10 @@ export function restoreEntry(db: Db, id: number): EntryView {
 		.where(eq(entries.id, id))
 		.get();
 	if (!current || current.deletedAt === null) {
-		throw new DomainError('not_found', 'Registrazione non trovata.');
+		throw new DomainError(
+			'not_found',
+			'Registrazione non trovata tra le eliminate: forse è già stata ripristinata.'
+		);
 	}
 
 	db.update(entries)
@@ -550,10 +553,15 @@ export function startTimer(
 	if (client.archivedAt !== null) {
 		throw new DomainError(
 			'archived',
-			'Il cliente è archiviato: ripristinalo per avviare il timer.'
+			'Il cliente è archiviato: ripristinalo in Gestione per avviare il timer.'
 		);
 	}
-	if (getTimer(db)) throw new DomainError('timer_running', "C'è già un timer in corso.");
+	if (getTimer(db)) {
+		throw new DomainError(
+			'timer_running',
+			"C'è già un timer in corso: fermalo o scartalo prima di avviarne un altro."
+		);
+	}
 
 	db.insert(timer)
 		.values({ id: 1, clientId: input.clientId, activity, day, startedAt: input.startedAt })
@@ -576,7 +584,12 @@ export function stopTimer(
 
 	return db.transaction((tx) => {
 		const current = tx.select().from(timer).where(eq(timer.id, 1)).get();
-		if (!current) throw new DomainError('no_timer', 'Nessun timer in corso.');
+		if (!current) {
+			throw new DomainError(
+				'no_timer',
+				'Il timer è già stato fermato o scartato: ricarica la pagina.'
+			);
+		}
 
 		const client = tx.select().from(clients).where(eq(clients.id, current.clientId)).get();
 		if (!client) throw new DomainError('not_found', 'Cliente non trovato.');

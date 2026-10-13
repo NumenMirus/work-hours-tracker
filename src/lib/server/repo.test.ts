@@ -364,7 +364,7 @@ describe('timer', () => {
 	it('rifiuta di fermare un timer assente', () => {
 		expect(() =>
 			stopTimer(db, { durationMinutes: 10, stoppedAt: '2026-10-12T09:01:00.000Z' })
-		).toThrowError(/Nessun timer/);
+		).toThrowError(/già stato fermato/);
 	});
 });
 

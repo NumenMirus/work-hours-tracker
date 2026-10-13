@@ -2,7 +2,8 @@
 export const MAX_DURATION_MINUTES = 1440;
 
 /** Messaggio d'errore unico per i campi durata. */
-export const DURATION_ERROR = 'Durata non valida. Esempi: 20, 1:30, 1h30 (max 24 h).';
+export const DURATION_ERROR =
+	'Durata non valida. Scrivi i minuti (20) oppure ore e minuti (1:30 o 1h30), al massimo 24 h.';
 
 /**
  * Converte un testo in minuti. Accetta `90`, `1:30`, `1h30`, `1.5h`, `45m`.
