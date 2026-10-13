@@ -29,6 +29,12 @@ describe('addDays', () => {
 		expect(addDays('2027-01-01', -1)).toBe('2026-12-31');
 		expect(addDays('2026-03-29', 1)).toBe('2026-03-30');
 	});
+
+	it('ai bordi del calendario resta sul giorno di partenza invece di produrre una data non valida', () => {
+		expect(addDays('9999-12-31', 1)).toBe('9999-12-31');
+		expect(addDays('0100-01-01', -1)).toBe('0100-01-01');
+		expect(isValidDay(addDays('9999-12-30', 1))).toBe(true);
+	});
 });
 
 describe('todayIn', () => {

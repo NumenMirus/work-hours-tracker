@@ -14,13 +14,18 @@ export function isValidDay(value: string): boolean {
 	);
 }
 
-/** Aritmetica sui giorni in UTC, così il fuso non sposta mai la data. */
+/**
+ * Aritmetica sui giorni in UTC, così il fuso non sposta mai la data. Ai bordi del calendario
+ * gestibile (anni 0100–9999, gli unici che `isValidDay` accetta) restituisce il giorno di
+ * partenza invece di una stringa non valida come `+010000-01-01`.
+ */
 export function addDays(day: string, amount: number): string {
 	const match = DAY_RE.exec(day);
 	if (!match) throw new Error(`Giorno non valido: ${day}`);
 	const date = new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3])));
 	date.setUTCDate(date.getUTCDate() + amount);
-	return date.toISOString().slice(0, 10);
+	const result = date.toISOString().slice(0, 10);
+	return isValidDay(result) ? result : day;
 }
 
 /** Il giorno corrente nel fuso indicato, in formato `YYYY-MM-DD`. */
