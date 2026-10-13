@@ -11,6 +11,7 @@ import {
 	deleteSession,
 	getDayTotals,
 	getTimer,
+	listActivitySuggestions,
 	listEntries,
 	listDeletedEntries,
 	listQuickTasks,
@@ -241,6 +242,26 @@ describe('registrazioni', () => {
 
 		restoreEntry(db, first.id);
 		expect(listDeletedEntries(db, '2026-10-12').map((entry) => entry.id)).toEqual([second.id]);
+	});
+
+	it('suggerisce task e attività recenti, senza quelle eliminate né quelle di mesi fa', () => {
+		const { rossi, assistenza } = seed();
+		const today = new Date().toISOString().slice(0, 10);
+		const add = (activity: string, day: string) =>
+			addManualEntry(db, { day, clientId: rossi.id, activity, durationMinutes: 10 });
+
+		add('Riunione recente', today);
+		add('Archivio vecchio', '2020-01-01');
+		softDeleteEntry(db, add('Per errore', today).id);
+		addQuickEntry(db, { taskId: assistenza.id, day: today });
+
+		const suggestions = listActivitySuggestions(db);
+		expect(suggestions).toContain('Riunione recente');
+		expect(suggestions).not.toContain('Archivio vecchio');
+		expect(suggestions).not.toContain('Per errore');
+		// Un nome che è anche task compare una volta sola, e le task vengono per prime.
+		expect(suggestions.filter((name) => name === 'Assistenza')).toHaveLength(1);
+		expect(suggestions.indexOf('Assistenza')).toBeLessThan(suggestions.indexOf('Riunione recente'));
 	});
 
 	it('rifiuta durate fuori range', () => {
