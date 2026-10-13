@@ -30,11 +30,31 @@
 	const fieldError = (field: string) => (error && form?.field === field ? error : null);
 
 	// Dopo l'invio restano il cliente scelto: solo attività e durata si azzerano.
-	const enhanceManual = (): SubmitFunction =>
-		onSuccess(withToast({ reset: false }), () => {
+	// Un doppio invio (doppio Invio o doppio tocco) registrerebbe due volte la stessa riga:
+	// finché la risposta non arriva il secondo viene scartato. Si usa aria-disabled e non
+	// `disabled`, che farebbe perdere il focus al bottone.
+	let pending = $state(false);
+	const enhanceManual = (): SubmitFunction => {
+		const inner = onSuccess(withToast({ reset: false }), () => {
 			activity = '';
 			duration = '';
 		});
+		return async (input) => {
+			if (pending) {
+				input.cancel();
+				return;
+			}
+			pending = true;
+			const next = await inner(input);
+			return async (opts) => {
+				try {
+					await next?.(opts);
+				} finally {
+					pending = false;
+				}
+			};
+		};
+	};
 </script>
 
 <section aria-labelledby="manual-title">
@@ -98,7 +118,9 @@
 		</div>
 
 		<div class="submit">
-			<Button type="submit" variant="primary">Aggiungi</Button>
+			<Button type="submit" variant="primary" aria-disabled={pending ? 'true' : undefined}>
+				Aggiungi
+			</Button>
 		</div>
 	</form>
 </section>
