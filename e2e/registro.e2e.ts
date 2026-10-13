@@ -358,3 +358,40 @@ test.describe.serial('Conferma in due passi', () => {
 		});
 	});
 });
+
+test.describe('Errori e sessione', () => {
+	test('con un cookie non valido si torna al login spiegando perché', async ({ page, context }) => {
+		await context.addCookies([
+			{ name: 'rh_session', value: 'sessione-scaduta', url: 'http://localhost:4173' }
+		]);
+		await page.goto('/');
+		await expect(page).toHaveURL(/\/login\?sessione=scaduta$/);
+		await expect(page.getByText('La sessione non è più valida')).toBeVisible();
+	});
+
+	test('una pagina inesistente mostra un errore in italiano, non quello di default', async ({
+		page
+	}) => {
+		await page.goto('/login');
+		await page.getByLabel('Password').fill(PASSWORD);
+		await page.getByRole('button', { name: 'Entra' }).click();
+		await expect(total(page)).toBeVisible();
+
+		const response = await page.goto('/non-esiste');
+		expect(response?.status()).toBe(404);
+		await expect(page.getByRole('heading', { name: 'Pagina non trovata' })).toBeVisible();
+		await page.getByRole('link', { name: 'Torna alla giornata' }).click();
+		await expect(total(page)).toBeVisible();
+	});
+
+	test('un giorno non valido nell’URL riporta alla giornata di oggi', async ({ page }) => {
+		await page.goto('/login');
+		await page.getByLabel('Password').fill(PASSWORD);
+		await page.getByRole('button', { name: 'Entra' }).click();
+		await expect(total(page)).toBeVisible();
+
+		await page.goto('/?d=2026-13-45');
+		await expect(page).toHaveURL(/\/$/);
+		await expect(total(page)).toBeVisible();
+	});
+});
