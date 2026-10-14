@@ -5,7 +5,7 @@
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
 	import LogOut from '@lucide/svelte/icons/log-out';
-	import favicon from '#lib/assets/favicon.svg';
+	import logo from '#lib/assets/logo.png';
 	import Toast from '#lib/components/Toast.svelte';
 	import RunningClock from '#lib/components/RunningClock.svelte';
 	import type { LayoutProps } from './$types';
@@ -17,12 +17,16 @@
 </script>
 
 <svelte:head>
-	<link rel="icon" href={favicon} />
+	<link rel="icon" href="/favicon.ico" sizes="48x48" />
+	<link rel="icon" href="/favicon.png" type="image/png" />
+	<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 </svelte:head>
 
 {#if data.authenticated}
 	<header class="shell">
-		<div class="brand">Registro ore</div>
+		<div class="brand">
+			<img class="logo" src={logo} alt="" width="28" height="28" />Registro ore
+		</div>
 		<nav aria-label="Sezioni">
 			<a href={resolve('/')} aria-current={isCurrent('/') ? 'page' : undefined}>Giornata</a>
 			<a href={resolve('/gestione')} aria-current={isCurrent('/gestione') ? 'page' : undefined}
@@ -74,8 +78,17 @@
 	}
 
 	.brand {
+		display: flex;
+		align-items: center;
+		gap: var(--space-2);
 		font-weight: 600;
 		font-size: var(--text-base);
+	}
+
+	@media (prefers-color-scheme: dark) {
+		.logo {
+			filter: invert(1);
+		}
 	}
 
 	nav {

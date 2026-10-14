@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import logo from '#lib/assets/logo.png';
 	import type { PageProps } from './$types';
 
 	let { form }: PageProps = $props();
@@ -12,6 +13,7 @@
 
 <main class="login">
 	<form method="POST" class="card">
+		<img class="logo" src={logo} alt="" width="48" height="48" />
 		<h1>Registro ore</h1>
 		<p class="hint">Accesso riservato. Inserisci la password per entrare.</p>
 		{#if expired}
@@ -59,6 +61,16 @@
 		border: 1px solid var(--border);
 		border-radius: var(--radius-md);
 		padding: var(--space-6);
+	}
+
+	.logo {
+		display: block;
+	}
+
+	@media (prefers-color-scheme: dark) {
+		.logo {
+			filter: invert(1);
+		}
 	}
 
 	h1 {
