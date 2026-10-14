@@ -20,12 +20,13 @@
 	<link rel="icon" href="/favicon.ico" sizes="48x48" />
 	<link rel="icon" href="/favicon.png" type="image/png" />
 	<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+	<link rel="manifest" href="/manifest.webmanifest" />
 </svelte:head>
 
 {#if data.authenticated}
 	<header class="shell">
 		<div class="brand">
-			<img class="logo" src={logo} alt="" width="28" height="28" />Registro ore
+			<img class="logo" src={logo} alt="" width="32" height="32" />Registro ore
 		</div>
 		<nav aria-label="Sezioni">
 			<a href={resolve('/')} aria-current={isCurrent('/') ? 'page' : undefined}>Giornata</a>

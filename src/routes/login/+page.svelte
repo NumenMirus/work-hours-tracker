@@ -13,7 +13,7 @@
 
 <main class="login">
 	<form method="POST" class="card">
-		<img class="logo" src={logo} alt="" width="48" height="48" />
+		<img class="logo" src={logo} alt="" width="64" height="64" />
 		<h1>Registro ore</h1>
 		<p class="hint">Accesso riservato. Inserisci la password per entrare.</p>
 		{#if expired}
