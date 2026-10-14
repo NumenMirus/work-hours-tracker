@@ -47,7 +47,7 @@ npm run db:generate -- --name add_x   # after editing src/lib/server/schema.ts
 npm run db:check                # drift check
 ```
 
-Release: `git tag v0.1.0 && git push origin v0.1.0` (workflow builds `registro-ore-<tag>.tar.gz` = `build/ drizzle/ package.json VERSION`). Server install/update: `deploy/install.sh` / `sudo registro-ore-update`.
+Release: `make release [BUMP=patch|minor|major | VERSION=X.Y.Z]` (`deploy/release.sh`: checks, annotated tag, **pushes** `main` + tag, watches the workflow; `DRY_RUN=1` for a no-push rehearsal). The workflow builds `registro-ore-<tag>.tar.gz` = `build/ drizzle/ package.json VERSION`. Server install/update: `deploy/install.sh` / `sudo registro-ore-update`.
 
 ## Code Conventions & Common Patterns
 

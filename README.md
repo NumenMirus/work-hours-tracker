@@ -69,11 +69,21 @@ accede solo via HTTPS.
 
 ### Pubblicare una release
 
-Le release vengono costruite da GitHub Actions al push di un tag `v*`:
+Le release vengono costruite da GitHub Actions al push di un tag `v*`. Da un `main`
+pulito e allineato con `origin`:
 
 ```sh
-git tag v0.1.0 && git push origin v0.1.0
+make release                  # patch: v0.1.1 -> v0.1.2
+make release BUMP=minor       # v0.1.1 -> v0.2.0
+make release VERSION=1.0.0    # versione esplicita
+make release DRY_RUN=1        # solo controlli, nessun tag né push
 ```
+
+`deploy/release.sh` verifica ramo, albero di lavoro e allineamento con `origin`,
+esegue `check`, `lint` e test unitari, mostra i commit inclusi, chiede conferma,
+crea il tag annotato, pusha `main` e il tag insieme e attende l'esito del workflow
+con `gh` (se installato). `YES=1` salta la conferma, `SKIP_CHECKS=1` i controlli
+locali, `WATCH=0` l'attesa.
 
 Il workflow esegue `check`, `lint`, test unitari e build, poi allega alla release
 `registro-ore-v0.1.0.tar.gz` (con `build/`, `drizzle/` e `VERSION`) e il relativo
